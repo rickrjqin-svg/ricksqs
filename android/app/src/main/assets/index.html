@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>小游戏合集</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div id="splash" class="splash">
+      <img src="assets/logo.jpg" alt="应用 Logo" />
+      <div class="splash-title">
+        <span>润</span><span>杰</span><span>的</span><span>小</span><span>游</span><span>戏</span>
+      </div>
+    </div>
+
+    <main class="app-shell">
+      <section class="hero">
+        <div>
+          <p class="eyebrow">Arcade Collection</p>
+          <h1>小游戏合集</h1>
+          <p class="subtitle">贪吃蛇、俄罗斯方块、五子棋、象棋，一站式开局。</p>
+        </div>
+        <div class="hero-stats">
+          <div><span id="gameLabel">贪吃蛇</span><small>当前游戏</small></div>
+          <div><span id="statusLabel">准备开始</span><small>状态</small></div>
+        </div>
+      </section>
+
+      <nav class="game-tabs" aria-label="游戏列表">
+        <button class="tab active" data-game="snake">贪吃蛇</button>
+        <button class="tab" data-game="tetris">俄罗斯方块</button>
+        <button class="tab" data-game="gomoku">五子棋</button>
+        <button class="tab" data-game="xiangqi">象棋</button>
+      </nav>
+
+      <section class="stage">
+        <aside class="side-panel">
+          <div class="score-grid">
+            <div>
+              <small>分数</small>
+              <strong id="score">0</strong>
+            </div>
+            <div>
+              <small>最高</small>
+              <strong id="best">0</strong>
+            </div>
+            <div>
+              <small>回合</small>
+              <strong id="turn">-</strong>
+            </div>
+            <div>
+              <small>等级</small>
+              <strong id="level">1</strong>
+            </div>
+          </div>
+
+          <div class="controls">
+            <button id="startBtn" class="primary">开始</button>
+            <button id="resetBtn">重开</button>
+          </div>
+
+          <div class="settings">
+            <label id="speedControl">
+              <span>速度</span>
+              <select id="snakeSpeed">
+                <option value="240" selected>新手</option>
+                <option value="180">中速</option>
+                <option value="125">高速</option>
+                <option value="85">极限</option>
+              </select>
+            </label>
+            <label id="modeControl">
+              <span>模式</span>
+              <select id="battleMode">
+                <option value="human">双人对战</option>
+                <option value="ai" selected>人机对战</option>
+              </select>
+            </label>
+            <label id="difficultyControl">
+              <span>难度</span>
+              <select id="aiLevel">
+                <option value="beginner">新手</option>
+                <option value="medium" selected>中级</option>
+                <option value="master">大师</option>
+              </select>
+            </label>
+          </div>
+
+          <div class="help">
+            <h2 id="helpTitle">操作</h2>
+            <p id="helpText">方向键或 WASD 控制移动，吃到果子会变长。</p>
+          </div>
+        </aside>
+
+        <section class="game-area">
+          <canvas id="snakeCanvas" width="480" height="480" class="game-canvas active"></canvas>
+          <div id="tetrisWrap" class="tetris-wrap">
+            <canvas id="tetrisCanvas" width="300" height="600" class="game-canvas"></canvas>
+            <aside class="next-panel">
+              <small>下一个</small>
+              <canvas id="nextCanvas" width="150" height="150"></canvas>
+            </aside>
+          </div>
+          <canvas id="gomokuCanvas" width="560" height="560" class="game-canvas"></canvas>
+          <div id="xiangqiBoard" class="xiangqi-board" aria-label="中国象棋棋盘"></div>
+          <button id="fallBtn" class="fall-btn">下落</button>
+        </section>
+      </section>
+    </main>
+
+    <div id="resultModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+      <div class="modal-card">
+        <p class="eyebrow">本局结束</p>
+        <h2 id="modalTitle">游戏结束</h2>
+        <p id="modalMessage">本局已经无法继续进行。</p>
+        <button id="modalRestart" class="primary">重开本局</button>
+      </div>
+    </div>
+
+    <script src="vendor/xqwlight/position.js"></script>
+    <script src="vendor/xqwlight/search.js"></script>
+    <script src="vendor/xqwlight/book.js"></script>
+    <script src="vendor/xqwlight/cchess.js"></script>
+    <script src="app.js"></script>
+  </body>
+</html>
