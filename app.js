@@ -1,6 +1,11 @@
 const $ = (id) => document.getElementById(id);
 
 const ui = {
+  home: $("homeScreen"),
+  gameScreen: $("gameScreen"),
+  gameTitle: $("gameTitle"),
+  backHome: $("backHomeBtn"),
+  topReset: $("topResetBtn"),
   score: $("score"),
   best: $("best"),
   turn: $("turn"),
@@ -1101,10 +1106,13 @@ function switchGame(id) {
   clearTimer();
   hideResult();
   activeGame = id;
-  document.querySelectorAll(".tab").forEach((b) => b.classList.toggle("active", b.dataset.game === id));
+  ui.home.classList.remove("active");
+  ui.gameScreen.classList.add("active");
+  document.querySelectorAll(".game-choice").forEach((b) => b.classList.toggle("active", b.dataset.game === id));
   document.querySelectorAll(".game-canvas, .xiangqi-board, .tetris-wrap").forEach((c) => c.classList.remove("active"));
   games[id].canvas.classList.add("active");
   ui.game.textContent = games[id].name;
+  ui.gameTitle.textContent = games[id].name;
   ui.helpTitle.textContent = "操作";
   ui.helpText.textContent = games[id].help;
   ui.speedControl.classList.toggle("hidden", id !== "snake");
@@ -1115,9 +1123,22 @@ function switchGame(id) {
   games[id].reset();
 }
 
-document.querySelectorAll(".tab").forEach((b) => b.addEventListener("click", () => switchGame(b.dataset.game)));
+function showHome() {
+  clearTimer();
+  hideResult();
+  ui.gameScreen.classList.remove("active");
+  ui.home.classList.add("active");
+  ui.snakeStick.classList.remove("show");
+  ui.tetrisControls.classList.remove("show");
+  document.querySelectorAll(".game-canvas, .xiangqi-board, .tetris-wrap").forEach((c) => c.classList.remove("active"));
+  document.querySelectorAll(".game-choice").forEach((b) => b.classList.remove("active"));
+}
+
+document.querySelectorAll(".game-choice").forEach((b) => b.addEventListener("click", () => switchGame(b.dataset.game)));
+ui.backHome.addEventListener("click", showHome);
 ui.start.addEventListener("click", () => games[activeGame].start());
 ui.reset.addEventListener("click", () => games[activeGame].reset());
+ui.topReset.addEventListener("click", () => games[activeGame].reset());
 ui.modalRestart.addEventListener("click", () => games[activeGame].reset());
 ui.fall.addEventListener("click", (e) => {
   e.stopPropagation();
@@ -1196,4 +1217,4 @@ document.addEventListener("keydown", (e) => {
   }
 });
 
-switchGame("snake");
+showHome();

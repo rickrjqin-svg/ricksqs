@@ -17,10 +17,53 @@
     </div>
 
     <main class="app-shell">
-      <section class="hero">
+      <section id="homeScreen" class="home-screen active">
+        <section class="hero">
+          <div>
+            <p class="eyebrow">Arcade Collection</p>
+            <h1>Rick的小游戏</h1>
+            <p class="subtitle">选择一个游戏，进入专属操作界面。</p>
+          </div>
+          <div class="hero-stats">
+            <div><span>4 款</span><small>小游戏</small></div>
+            <div><span>离线</span><small>本地运行</small></div>
+          </div>
+        </section>
+
+        <section class="game-menu" aria-label="游戏大厅">
+          <button class="game-choice snake-choice" data-game="snake">
+            <strong>贪吃蛇</strong>
+            <span>摇杆控制，吃果成长</span>
+          </button>
+          <button class="game-choice tetris-choice" data-game="tetris">
+            <strong>俄罗斯方块</strong>
+            <span>左右移动，旋转下落</span>
+          </button>
+          <button class="game-choice gomoku-choice" data-game="gomoku">
+            <strong>五子棋</strong>
+            <span>人机或双人对弈</span>
+          </button>
+          <button class="game-choice xiangqi-choice" data-game="xiangqi">
+            <strong>象棋</strong>
+            <span>本地引擎人机对战</span>
+          </button>
+        </section>
+      </section>
+
+      <section id="gameScreen" class="game-screen">
+        <section class="game-header">
+          <button id="backHomeBtn" class="back-btn" type="button">返回主界面</button>
+          <div>
+            <p class="eyebrow">Now Playing</p>
+            <h1 id="gameTitle">贪吃蛇</h1>
+          </div>
+          <button id="topResetBtn" class="back-btn" type="button">重开</button>
+        </section>
+
+        <section class="hero compact-hero">
         <div>
           <p class="eyebrow">Arcade Collection</p>
-          <h1>Rick的小游戏</h1>
+          <h1>游戏状态</h1>
           <p class="subtitle">贪吃蛇、俄罗斯方块、五子棋、象棋，一站式开局。</p>
         </div>
         <div class="hero-stats">
@@ -28,13 +71,6 @@
           <div><span id="statusLabel">准备开始</span><small>状态</small></div>
         </div>
       </section>
-
-      <nav class="game-tabs" aria-label="游戏列表">
-        <button class="tab active" data-game="snake">贪吃蛇</button>
-        <button class="tab" data-game="tetris">俄罗斯方块</button>
-        <button class="tab" data-game="gomoku">五子棋</button>
-        <button class="tab" data-game="xiangqi">象棋</button>
-      </nav>
 
       <section class="stage">
         <aside class="side-panel">
@@ -119,6 +155,7 @@
             <button id="tetrisRight" type="button">右</button>
           </div>
         </section>
+      </section>
       </section>
     </main>
 

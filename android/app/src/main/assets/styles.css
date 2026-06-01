@@ -110,6 +110,95 @@ button {
   padding: 28px 0;
 }
 
+.home-screen,
+.game-screen {
+  display: none;
+}
+
+.home-screen.active,
+.game-screen.active {
+  display: block;
+}
+
+.game-menu {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+  margin-top: 16px;
+}
+
+.game-choice {
+  min-height: 170px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.02)),
+    var(--panel);
+  color: var(--text);
+  padding: 22px;
+  text-align: left;
+  box-shadow: 0 18px 48px rgba(0, 0, 0, 0.18);
+  transition: transform 0.16s ease, border-color 0.16s ease, background 0.16s ease;
+}
+
+.game-choice:hover {
+  transform: translateY(-2px);
+  border-color: rgba(232, 182, 83, 0.62);
+}
+
+.game-choice strong {
+  display: block;
+  font-size: clamp(24px, 5vw, 42px);
+  line-height: 1;
+}
+
+.game-choice span {
+  display: block;
+  margin-top: 12px;
+  color: var(--muted);
+  font-size: 15px;
+}
+
+.snake-choice { background: linear-gradient(135deg, rgba(84, 199, 160, 0.22), rgba(255, 255, 255, 0.03)), var(--panel); }
+.tetris-choice { background: linear-gradient(135deg, rgba(102, 194, 255, 0.2), rgba(255, 255, 255, 0.03)), var(--panel); }
+.gomoku-choice { background: linear-gradient(135deg, rgba(232, 182, 83, 0.22), rgba(255, 255, 255, 0.03)), var(--panel); }
+.xiangqi-choice { background: linear-gradient(135deg, rgba(239, 120, 102, 0.22), rgba(255, 255, 255, 0.03)), var(--panel); }
+
+.game-header {
+  display: grid;
+  grid-template-columns: 140px 1fr 100px;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.game-header h1 {
+  font-size: clamp(30px, 6vw, 56px);
+  text-align: center;
+}
+
+.game-header .eyebrow {
+  text-align: center;
+}
+
+.back-btn {
+  min-height: 46px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--panel);
+  color: var(--text);
+  font-weight: 850;
+}
+
+.compact-hero {
+  min-height: 116px;
+  padding: 18px 22px;
+}
+
+.compact-hero h1 {
+  font-size: clamp(28px, 5vw, 44px);
+}
+
 .hero {
   display: flex;
   align-items: end;
@@ -546,6 +635,38 @@ small {
   .app-shell {
     width: min(100% - 20px, 680px);
     padding: 10px 0 20px;
+  }
+
+  .game-menu {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .game-choice {
+    min-height: 118px;
+    padding: 18px;
+  }
+
+  .game-header {
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+
+  .game-header div {
+    grid-column: 1 / -1;
+    grid-row: 1;
+  }
+
+  .game-header h1 {
+    font-size: 34px;
+  }
+
+  .back-btn {
+    grid-row: 2;
+  }
+
+  .compact-hero {
+    display: none;
   }
 
   .hero,
