@@ -100,8 +100,8 @@
           <canvas id="snakeCanvas" width="480" height="480" class="game-canvas active"></canvas>
           <div id="tetrisWrap" class="tetris-wrap">
             <canvas id="tetrisCanvas" width="300" height="600" class="game-canvas"></canvas>
-            <aside class="next-panel">
-              <small>下一个</small>
+            <aside class="next-panel" aria-label="下一个方块">
+              <small>NEXT</small>
               <canvas id="nextCanvas" width="150" height="150"></canvas>
             </aside>
           </div>
@@ -118,10 +118,10 @@
           </div>
 
           <div id="tetrisControls" class="tetris-controls" aria-label="俄罗斯方块移动控制">
-            <button id="tetrisLeft" type="button">左</button>
-            <button id="tetrisRotate" type="button">旋转</button>
-            <button id="tetrisRight" type="button">右</button>
-            <button id="fallBtn" type="button">下落</button>
+            <button id="tetrisLeft" type="button" aria-label="左移">←</button>
+            <button id="tetrisRotate" type="button" aria-label="旋转">↻</button>
+            <button id="tetrisRight" type="button" aria-label="右移">→</button>
+            <button id="fallBtn" type="button" aria-label="快速下落">↓</button>
           </div>
 
           <div id="arcadeControls" class="arcade-controls" aria-label="街机游戏控制">

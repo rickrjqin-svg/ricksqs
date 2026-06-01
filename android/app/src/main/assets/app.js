@@ -322,7 +322,12 @@ const tetris = {
   rotate() {
     if (this.over) return;
     const rotated = this.piece.shape[0].map((_, i) => this.piece.shape.map((r) => r[i]).reverse());
-    if (!this.collide(this.piece.x, this.piece.y, rotated)) this.piece.shape = rotated;
+    const kicks = [0, -1, 1, -2, 2];
+    const offset = kicks.find((kick) => !this.collide(this.piece.x + kick, this.piece.y, rotated));
+    if (offset !== undefined) {
+      this.piece.x += offset;
+      this.piece.shape = rotated;
+    }
     this.draw();
   },
   hardDrop() {

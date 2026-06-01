@@ -598,26 +598,42 @@ small {
   left: 50%;
   bottom: 18px;
   transform: translateX(-50%);
-  grid-template-columns: repeat(3, minmax(74px, 1fr));
-  gap: 10px;
-  width: min(320px, calc(100% - 28px));
+  grid-template-columns: repeat(3, minmax(68px, 1fr));
+  gap: 12px;
+  width: min(360px, calc(100% - 28px));
+  padding: 10px;
+  border: 1px solid rgba(36, 50, 36, 0.12);
+  border-radius: 24px;
+  background: rgba(255, 255, 255, 0.68);
+  box-shadow: 0 18px 36px rgba(45, 72, 35, 0.18);
+  backdrop-filter: blur(14px);
 }
 
 .tetris-controls button {
-  min-height: 52px;
-  border-radius: 14px;
-  background: rgba(36, 50, 36, 0.1);
+  display: grid;
+  place-items: center;
+  min-height: 58px;
+  border-radius: 18px;
+  background: #fff;
   color: var(--text);
-  font-weight: 900;
+  font-size: 28px;
+  font-weight: 950;
   border: 1px solid rgba(36, 50, 36, 0.12);
-  box-shadow: 0 10px 24px rgba(87, 123, 65, 0.18);
-  backdrop-filter: blur(10px);
+  box-shadow: 0 6px 0 rgba(36, 50, 36, 0.12), 0 12px 22px rgba(87, 123, 65, 0.12);
+  touch-action: manipulation;
+}
+
+.tetris-controls button:active {
+  transform: translateY(4px);
+  box-shadow: 0 2px 0 rgba(36, 50, 36, 0.13), 0 8px 16px rgba(87, 123, 65, 0.1);
 }
 
 .tetris-controls #fallBtn {
   grid-column: 1 / -1;
   background: linear-gradient(135deg, var(--jade), #2e9d80);
   color: #fff;
+  min-height: 54px;
+  font-size: 32px;
 }
 
 .tetris-controls #tetrisRotate {
@@ -680,7 +696,7 @@ small {
 }
 
 .game-screen.active #tetrisCanvas {
-  height: min(78vh, 620px);
+  height: min(calc(100vh - 178px), 640px);
   width: auto;
 }
 
@@ -692,9 +708,12 @@ small {
 
 .tetris-wrap {
   display: none;
-  grid-template-columns: auto 170px;
-  gap: 18px;
+  position: relative;
+  grid-template-columns: auto minmax(116px, 144px);
+  gap: 14px;
   align-items: start;
+  justify-content: center;
+  max-width: calc(100vw - 28px);
 }
 
 .tetris-wrap.active {
@@ -703,27 +722,39 @@ small {
 
 .tetris-wrap .game-canvas {
   display: block;
+  border: 6px solid #243224;
+  border-radius: 18px;
+  background: #0f171a;
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, 0.08),
+    0 18px 0 rgba(36, 50, 36, 0.16),
+    0 30px 54px rgba(28, 48, 30, 0.24);
 }
 
 .next-panel {
-  border: 1px solid var(--line);
-  border-radius: 8px;
-  background: rgba(255, 255, 255, 0.045);
-  padding: 14px;
+  border: 1px solid rgba(36, 50, 36, 0.12);
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.82);
+  padding: 12px;
+  box-shadow: 0 8px 0 rgba(36, 50, 36, 0.1), 0 18px 36px rgba(87, 123, 65, 0.14);
+  backdrop-filter: blur(12px);
 }
 
 .next-panel small {
+  display: block;
   margin: 0 0 10px;
-  color: var(--gold);
-  font-weight: 850;
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 950;
+  letter-spacing: 0;
 }
 
 #nextCanvas {
   width: 100%;
   height: auto;
-  border-radius: 8px;
-  background: #101416;
-  box-shadow: inset 0 0 0 1px var(--line);
+  border-radius: 14px;
+  background: #0f171a;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.08);
 }
 
 .xiangqi-board {
@@ -930,12 +961,50 @@ small {
   }
 
   .tetris-wrap {
-    grid-template-columns: 1fr;
+    grid-template-columns: auto 76px;
+    gap: 8px;
+    max-width: calc(100vw - 14px);
   }
 
   .next-panel {
-    width: min(180px, 100%);
-    margin: 0 auto;
+    width: 76px;
+    padding: 8px;
+    border-radius: 14px;
+    margin: 0;
+  }
+
+  .next-panel small {
+    margin-bottom: 6px;
+    font-size: 10px;
+  }
+
+  .game-screen.active #tetrisCanvas {
+    height: min(calc(100vh - 224px), 560px);
+  }
+
+  .tetris-wrap .game-canvas {
+    border-width: 4px;
+    border-radius: 14px;
+  }
+
+  .tetris-controls {
+    bottom: 12px;
+    grid-template-columns: repeat(3, minmax(58px, 1fr));
+    gap: 8px;
+    width: min(328px, calc(100% - 20px));
+    padding: 8px;
+    border-radius: 20px;
+  }
+
+  .tetris-controls button {
+    min-height: 50px;
+    border-radius: 15px;
+    font-size: 24px;
+  }
+
+  .tetris-controls #fallBtn {
+    min-height: 48px;
+    font-size: 28px;
   }
 
   .xiangqi-board {
