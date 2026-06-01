@@ -12,6 +12,11 @@ const ui = {
   start: $("startBtn"),
   reset: $("resetBtn"),
   fall: $("fallBtn"),
+  tetrisLeft: $("tetrisLeft"),
+  tetrisRight: $("tetrisRight"),
+  tetrisControls: $("tetrisControls"),
+  snakeStick: $("snakeStick"),
+  joystickKnob: $("joystickKnob"),
   speedControl: $("speedControl"),
   modeControl: $("modeControl"),
   difficultyControl: $("difficultyControl"),
@@ -72,6 +77,25 @@ function roundRect(ctx, x, y, w, h, r) {
   ctx.beginPath();
   ctx.roundRect(x, y, w, h, r);
   ctx.fill();
+}
+
+function bindHoldButton(button, action) {
+  let timer = null;
+  const stop = () => {
+    if (timer) clearInterval(timer);
+    timer = null;
+  };
+  const start = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    action();
+    stop();
+    timer = setInterval(action, 105);
+  };
+  button.addEventListener("pointerdown", start);
+  button.addEventListener("pointerup", stop);
+  button.addEventListener("pointercancel", stop);
+  button.addEventListener("pointerleave", stop);
 }
 
 const snake = {
@@ -562,6 +586,8 @@ const xiangqi = {
   current: "r",
   ended: false,
   thinking: false,
+  padX: 7,
+  padY: 5.8,
   reset() {
     clearTimer();
     hideResult();
@@ -602,8 +628,9 @@ const xiangqi = {
       b.className = `piece ${p.side === "r" ? "red" : ""}`;
       if (this.selected?.x === x && this.selected?.y === y) b.classList.add("selected");
       b.textContent = p.n;
-      b.style.left = `${(x / 8) * 100}%`;
-      b.style.top = `${(y / 9) * 100}%`;
+      const point = this.boardPoint(x, y);
+      b.style.left = `${point.x}%`;
+      b.style.top = `${point.y}%`;
       b.addEventListener("click", (e) => {
         e.stopPropagation();
         this.pick(x, y);
@@ -611,25 +638,40 @@ const xiangqi = {
       this.el.appendChild(b);
     }));
     this.el.onclick = (e) => {
-      const rect = this.el.getBoundingClientRect();
-      const x = Math.round(((e.clientX - rect.left) / rect.width) * 8);
-      const y = Math.round(((e.clientY - rect.top) / rect.height) * 9);
-      this.moveTo(x, y);
+      const point = this.eventToBoard(e);
+      if (point) this.moveTo(point.x, point.y);
     };
+  },
+  boardPoint(x, y) {
+    return {
+      x: this.padX + (x / 8) * (100 - this.padX * 2),
+      y: this.padY + (y / 9) * (100 - this.padY * 2),
+    };
+  },
+  eventToBoard(e) {
+    const rect = this.el.getBoundingClientRect();
+    const px = ((e.clientX - rect.left) / rect.width) * 100;
+    const py = ((e.clientY - rect.top) / rect.height) * 100;
+    const bx = Math.round(((px - this.padX) / (100 - this.padX * 2)) * 8);
+    const by = Math.round(((py - this.padY) / (100 - this.padY * 2)) * 9);
+    if (bx < 0 || bx > 8 || by < 0 || by > 9) return null;
+    return { x: bx, y: by };
   },
   line(x1, y1, x2, y2) {
     const l = document.createElement("div");
     l.className = "x-line";
-    const ax = (x1 / 8) * 100;
-    const ay = (y1 / 9) * 100;
-    const bx = (x2 / 8) * 100;
-    const by = (y2 / 9) * 100;
+    const a = this.boardPoint(x1, y1);
+    const b = this.boardPoint(x2, y2);
+    const ax = a.x;
+    const ay = a.y;
+    const bx = b.x;
+    const by = b.y;
     const len = Math.hypot(bx - ax, by - ay);
     const ang = Math.atan2(by - ay, bx - ax) * 180 / Math.PI;
     l.style.left = `${ax}%`;
     l.style.top = `${ay}%`;
     l.style.width = `${len}%`;
-    l.style.height = "2px";
+    l.style.height = "3px";
     l.style.transformOrigin = "0 0";
     l.style.transform = `rotate(${ang}deg)`;
     this.el.appendChild(l);
@@ -1027,14 +1069,14 @@ const xiangqi = {
 const games = {
   snake: {
     name: "贪吃蛇",
-    help: "方向键或 WASD 控制移动，吃到果子会变长。",
+    help: "方向键、WASD 或移动端摇杆控制移动，摇杆轻推即可转向。",
     canvas: snake.canvas,
     reset: () => snake.reset(),
     start: () => snake.start(),
   },
   tetris: {
     name: "俄罗斯方块",
-    help: "方向键移动，↑ 或 W 旋转，空格一键落下。半透明方块是落点阴影。",
+    help: "方向键移动，↑ 或 W 旋转。安卓端可用左右键移动，点击棋盘空白处旋转，点击下落快速落下。",
     canvas: $("tetrisWrap"),
     reset: () => tetris.reset(),
     start: () => tetris.start(),
@@ -1048,7 +1090,7 @@ const games = {
   },
   xiangqi: {
     name: "象棋",
-    help: "点击棋子选中，再点击目标位置移动。吃掉对方将帅后弹窗宣布胜利。",
+    help: "点击棋子选中，再点击目标位置移动。人机模式使用本地 xqwlight 引擎离线计算。",
     canvas: xiangqi.el,
     reset: () => xiangqi.reset(),
     start: () => xiangqi.start(),
@@ -1068,7 +1110,8 @@ function switchGame(id) {
   ui.speedControl.classList.toggle("hidden", id !== "snake");
   ui.modeControl.classList.toggle("hidden", id !== "gomoku" && id !== "xiangqi");
   ui.difficultyControl.classList.toggle("hidden", id !== "gomoku" && id !== "xiangqi");
-  ui.fall.classList.toggle("show", id === "tetris");
+  ui.snakeStick.classList.toggle("show", id === "snake");
+  ui.tetrisControls.classList.toggle("show", id === "tetris");
   games[id].reset();
 }
 
@@ -1080,6 +1123,12 @@ ui.fall.addEventListener("click", (e) => {
   e.stopPropagation();
   if (activeGame === "tetris") tetris.hardDrop();
 });
+bindHoldButton(ui.tetrisLeft, () => {
+  if (activeGame === "tetris") tetris.move(-1, 0);
+});
+bindHoldButton(ui.tetrisRight, () => {
+  if (activeGame === "tetris") tetris.move(1, 0);
+});
 ui.snakeSpeed.addEventListener("change", () => {
   if (activeGame !== "snake" || snake.ended || !runningLoop) return;
   clearTimer();
@@ -1088,6 +1137,44 @@ ui.snakeSpeed.addEventListener("change", () => {
 snake.canvas.addEventListener("click", (e) => snake.tap(e));
 tetris.canvas.addEventListener("click", () => tetris.tap());
 gomoku.canvas.addEventListener("click", (e) => gomoku.click(e));
+
+let joystickActive = false;
+function updateJoystick(e) {
+  if (activeGame !== "snake" || snake.ended) return;
+  const rect = ui.snakeStick.getBoundingClientRect();
+  const cx = rect.left + rect.width / 2;
+  const cy = rect.top + rect.height / 2;
+  const dx = e.clientX - cx;
+  const dy = e.clientY - cy;
+  const distance = Math.hypot(dx, dy);
+  const max = rect.width * 0.3;
+  const ratio = distance > max ? max / distance : 1;
+  const kx = dx * ratio;
+  const ky = dy * ratio;
+  ui.joystickKnob.style.transform = `translate(calc(-50% + ${kx}px), calc(-50% + ${ky}px))`;
+  if (distance < 10) return;
+  if (Math.abs(dx) > Math.abs(dy)) {
+    snake.turn(dx > 0 ? 1 : -1, 0);
+  } else {
+    snake.turn(0, dy > 0 ? 1 : -1);
+  }
+}
+
+ui.snakeStick.addEventListener("pointerdown", (e) => {
+  e.preventDefault();
+  joystickActive = true;
+  ui.snakeStick.setPointerCapture?.(e.pointerId);
+  updateJoystick(e);
+});
+ui.snakeStick.addEventListener("pointermove", (e) => {
+  if (joystickActive) updateJoystick(e);
+});
+["pointerup", "pointercancel", "lostpointercapture"].forEach((eventName) => {
+  ui.snakeStick.addEventListener(eventName, () => {
+    joystickActive = false;
+    ui.joystickKnob.style.transform = "translate(-50%, -50%)";
+  });
+});
 
 document.addEventListener("keydown", (e) => {
   if (ui.modal.classList.contains("show")) return;

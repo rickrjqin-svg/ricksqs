@@ -3,14 +3,16 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>小游戏合集</title>
+    <title>Rick的小游戏</title>
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
     <div id="splash" class="splash">
-      <img src="assets/logo.jpg" alt="应用 Logo" />
+      <div class="splash-logo-wrap">
+        <img src="assets/logo.jpg" alt="Rick的小游戏 Logo" />
+      </div>
       <div class="splash-title">
-        <span>润</span><span>杰</span><span>的</span><span>小</span><span>游</span><span>戏</span>
+        <span>R</span><span>i</span><span>c</span><span>k</span><span>的</span><span>小游戏</span>
       </div>
     </div>
 
@@ -18,7 +20,7 @@
       <section class="hero">
         <div>
           <p class="eyebrow">Arcade Collection</p>
-          <h1>小游戏合集</h1>
+          <h1>Rick的小游戏</h1>
           <p class="subtitle">贪吃蛇、俄罗斯方块、五子棋、象棋，一站式开局。</p>
         </div>
         <div class="hero-stats">
@@ -89,7 +91,7 @@
 
           <div class="help">
             <h2 id="helpTitle">操作</h2>
-            <p id="helpText">方向键或 WASD 控制移动，吃到果子会变长。</p>
+            <p id="helpText">方向键、WASD 或摇杆控制移动，吃到果子会变长。</p>
           </div>
         </aside>
 
@@ -104,7 +106,18 @@
           </div>
           <canvas id="gomokuCanvas" width="560" height="560" class="game-canvas"></canvas>
           <div id="xiangqiBoard" class="xiangqi-board" aria-label="中国象棋棋盘"></div>
-          <button id="fallBtn" class="fall-btn">下落</button>
+
+          <div id="snakeStick" class="joystick" aria-label="贪吃蛇方向摇杆">
+            <div class="joystick-base">
+              <div id="joystickKnob" class="joystick-knob"></div>
+            </div>
+          </div>
+
+          <div id="tetrisControls" class="tetris-controls" aria-label="俄罗斯方块移动控制">
+            <button id="tetrisLeft" type="button">左</button>
+            <button id="fallBtn" type="button">下落</button>
+            <button id="tetrisRight" type="button">右</button>
+          </div>
         </section>
       </section>
     </main>
