@@ -7,22 +7,16 @@
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
-    <div id="splash" class="splash">
-      <div class="splash-logo-wrap">
-        <img src="assets/logo-transparent.png" alt="Rick的小游戏 Logo" />
-      </div>
-    </div>
-
     <main class="app-shell">
       <section id="homeScreen" class="home-screen active">
         <section class="hero home-hero">
           <div>
             <p class="eyebrow">Rick Arcade</p>
             <h1>Rick的小游戏</h1>
-            <p class="subtitle">选择一个分类，进入全屏游戏体验。</p>
+            <p class="subtitle">像闯关一样选择游戏，打开后直接进入全屏体验。</p>
           </div>
           <div class="hero-stats">
-            <div><span>3 类</span><small>游戏节点</small></div>
+            <div><span>2 类</span><small>游戏节点</small></div>
             <div><span>离线</span><small>本地运行</small></div>
           </div>
         </section>
@@ -35,10 +29,6 @@
           <button class="category-card board-card" data-category="board">
             <strong>棋牌类</strong>
             <span>五子棋、象棋</span>
-          </button>
-          <button class="category-card arcade-card" data-category="arcade">
-            <strong>街机类</strong>
-            <span>原创突击、街头投篮、太空射击</span>
           </button>
         </section>
       </section>
@@ -68,18 +58,6 @@
             <strong>象棋</strong>
             <span>本地引擎人机对战</span>
           </button>
-          <button class="game-choice shooter-choice" data-game="shooter" data-category="arcade">
-            <strong>像素突击</strong>
-            <span>原创横版街机射击</span>
-          </button>
-          <button class="game-choice hoops-choice" data-game="hoops" data-category="arcade">
-            <strong>街头投篮</strong>
-            <span>蓄力投篮，连进加分</span>
-          </button>
-          <button class="game-choice galaxy-choice" data-game="galaxy" data-category="arcade">
-            <strong>银河守卫</strong>
-            <span>移动闪避，连续射击</span>
-          </button>
         </section>
       </section>
 
@@ -106,9 +84,6 @@
             </aside>
           </div>
           <canvas id="gomokuCanvas" width="560" height="560" class="game-canvas"></canvas>
-          <canvas id="shooterCanvas" width="720" height="480" class="game-canvas"></canvas>
-          <canvas id="hoopsCanvas" width="560" height="560" class="game-canvas"></canvas>
-          <canvas id="galaxyCanvas" width="560" height="560" class="game-canvas"></canvas>
           <div id="xiangqiBoard" class="xiangqi-board" aria-label="中国象棋棋盘"></div>
 
           <div id="snakeStick" class="joystick" aria-label="贪吃蛇方向摇杆">
@@ -122,12 +97,6 @@
             <button id="tetrisRotate" type="button" aria-label="旋转">↻</button>
             <button id="tetrisRight" type="button" aria-label="右移">→</button>
             <button id="fallBtn" type="button" aria-label="快速下落">↓</button>
-          </div>
-
-          <div id="arcadeControls" class="arcade-controls" aria-label="街机游戏控制">
-            <button id="arcadeLeft" type="button">左</button>
-            <button id="arcadeAction" type="button">动作</button>
-            <button id="arcadeRight" type="button">右</button>
           </div>
 
           <div id="boardTip" class="board-tip">红方回合</div>

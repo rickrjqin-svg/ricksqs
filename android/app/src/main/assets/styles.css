@@ -28,76 +28,6 @@ body {
   color: var(--text);
 }
 
-.splash {
-  position: fixed;
-  inset: 0;
-  z-index: 50;
-  display: grid;
-  place-items: center;
-  align-content: center;
-  gap: 18px;
-  background: #fff;
-  animation: splashExit 0.38s ease 1.45s forwards;
-}
-
-.splash-logo-wrap {
-  width: min(46vw, 230px);
-  aspect-ratio: 1;
-  display: grid;
-  place-items: center;
-  border-radius: 30px;
-  background: #fff;
-  opacity: 0;
-  transform: scale(0.92);
-  animation: logoAppear 1.1s ease forwards;
-  box-shadow: 0 18px 52px rgba(22, 24, 28, 0.08);
-}
-
-.splash img {
-  width: 100%;
-  height: 100%;
-  border-radius: 28px;
-  object-fit: cover;
-}
-
-.splash-title {
-  display: flex;
-  align-items: baseline;
-  gap: 5px;
-  font-size: clamp(28px, 8vw, 46px);
-  font-weight: 950;
-  color: #16181c;
-  letter-spacing: 0;
-}
-
-.splash-title span {
-  opacity: 0;
-  transform: translateY(56px) scale(0.92);
-  animation: titleHop 0.72s cubic-bezier(0.2, 1.4, 0.28, 1) forwards;
-}
-
-.splash-title span:nth-child(1) { animation-delay: 2.25s; }
-.splash-title span:nth-child(2) { animation-delay: 2.45s; }
-.splash-title span:nth-child(3) { animation-delay: 2.65s; }
-.splash-title span:nth-child(4) { animation-delay: 2.85s; }
-.splash-title span:nth-child(5) { animation-delay: 3.05s; }
-.splash-title span:nth-child(6) { animation-delay: 3.25s; }
-
-@keyframes logoAppear {
-  0% { opacity: 0; transform: scale(0.86); filter: blur(8px); }
-  100% { opacity: 1; transform: scale(1); filter: blur(0); }
-}
-
-@keyframes titleHop {
-  0% { opacity: 0; transform: translateY(56px) scale(0.92); }
-  68% { opacity: 1; transform: translateY(-8px) scale(1.05); }
-  100% { opacity: 1; transform: translateY(0) scale(1); }
-}
-
-@keyframes splashExit {
-  to { opacity: 0; visibility: hidden; pointer-events: none; }
-}
-
 button {
   border: 0;
   color: inherit;
@@ -123,22 +53,63 @@ button {
   display: block;
 }
 
+.home-screen.active,
+.library-screen.active {
+  animation: screenRise 0.28s ease both;
+}
+
+@keyframes screenRise {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
 .category-menu {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 18px;
-  margin: 18px auto 0;
-  max-width: 980px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 22px;
+  margin: 22px auto 0;
+  max-width: 860px;
 }
 
 .category-card {
-  min-height: 210px;
+  position: relative;
+  min-height: 230px;
   border: 2px solid rgba(36, 50, 36, 0.08);
-  border-radius: 26px;
+  border-radius: 30px;
   color: var(--text);
-  padding: 24px;
+  padding: 28px;
   text-align: left;
   box-shadow: 0 9px 0 rgba(36, 50, 36, 0.08), 0 20px 48px rgba(87, 123, 65, 0.14);
+  overflow: hidden;
+  transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+}
+
+.category-card::after {
+  content: "";
+  position: absolute;
+  right: 24px;
+  bottom: 24px;
+  width: 84px;
+  aspect-ratio: 1;
+  border-radius: 26px;
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.38)),
+    radial-gradient(circle at 34% 28%, rgba(255, 255, 255, 0.98), rgba(255, 255, 255, 0) 42%);
+  box-shadow: inset 0 -8px 0 rgba(36, 50, 36, 0.08), 0 16px 30px rgba(36, 50, 36, 0.12);
+}
+
+.category-card:hover {
+  transform: translateY(-4px);
+  border-color: rgba(88, 204, 2, 0.5);
+  box-shadow: 0 12px 0 rgba(36, 50, 36, 0.08), 0 28px 58px rgba(87, 123, 65, 0.18);
+}
+
+.category-card:active,
+.game-choice:active,
+.ghost-btn:active,
+.settings-btn:active {
+  transform: translateY(5px);
+  box-shadow: 0 3px 0 rgba(36, 50, 36, 0.08), 0 12px 26px rgba(87, 123, 65, 0.1);
 }
 
 .category-card strong {
@@ -156,7 +127,6 @@ button {
 
 .mini-card { background: linear-gradient(135deg, rgba(88, 204, 2, 0.32), #fff); }
 .board-card { background: linear-gradient(135deg, rgba(255, 200, 61, 0.36), #fff); }
-.arcade-card { background: linear-gradient(135deg, rgba(28, 176, 246, 0.28), #fff); }
 
 .library-header {
   display: grid;
@@ -209,6 +179,11 @@ button {
   border-color: rgba(88, 204, 2, 0.58);
 }
 
+.game-choice.active {
+  border-color: rgba(88, 204, 2, 0.72);
+  box-shadow: 0 8px 0 rgba(88, 204, 2, 0.22), 0 18px 48px rgba(87, 123, 65, 0.16);
+}
+
 .game-choice strong {
   display: block;
   font-size: clamp(24px, 5vw, 42px);
@@ -226,8 +201,6 @@ button {
 .tetris-choice { background: linear-gradient(135deg, rgba(28, 176, 246, 0.22), rgba(255, 255, 255, 0.86)), var(--panel); }
 .gomoku-choice { background: linear-gradient(135deg, rgba(255, 200, 61, 0.26), rgba(255, 255, 255, 0.86)), var(--panel); }
 .xiangqi-choice { background: linear-gradient(135deg, rgba(255, 107, 95, 0.22), rgba(255, 255, 255, 0.86)), var(--panel); }
-.shooter-choice { background: linear-gradient(135deg, rgba(160, 93, 255, 0.2), rgba(255, 255, 255, 0.86)), var(--panel); }
-.hoops-choice { background: linear-gradient(135deg, rgba(255, 150, 38, 0.24), rgba(255, 255, 255, 0.86)), var(--panel); }
 
 .game-header {
   display: grid;
@@ -452,6 +425,12 @@ small {
   background: transparent;
 }
 
+.game-screen[data-game="tetris"] .game-area {
+  align-items: start;
+  padding-top: 76px;
+  padding-bottom: 154px;
+}
+
 .utility-panel {
   display: none;
 }
@@ -641,36 +620,6 @@ small {
   color: #fff;
 }
 
-.arcade-controls.show {
-  display: grid;
-}
-
-.arcade-controls {
-  display: none;
-  position: absolute;
-  left: 50%;
-  bottom: 18px;
-  transform: translateX(-50%);
-  grid-template-columns: repeat(3, minmax(74px, 1fr));
-  gap: 10px;
-  width: min(330px, calc(100% - 28px));
-}
-
-.arcade-controls button {
-  min-height: 52px;
-  border-radius: 14px;
-  background: rgba(36, 50, 36, 0.1);
-  color: var(--text);
-  font-weight: 900;
-  border: 1px solid rgba(36, 50, 36, 0.12);
-  box-shadow: 0 10px 24px rgba(87, 123, 65, 0.18);
-}
-
-.arcade-controls #arcadeAction {
-  background: linear-gradient(135deg, var(--blue), #1687d9);
-  color: #fff;
-}
-
 .game-canvas {
   display: none;
   max-width: 100%;
@@ -685,18 +634,12 @@ small {
 }
 
 .game-screen.active #snakeCanvas,
-.game-screen.active #gomokuCanvas,
-.game-screen.active #hoopsCanvas,
-.game-screen.active #galaxyCanvas {
+.game-screen.active #gomokuCanvas {
   width: min(94vw, calc(100vh - 100px));
 }
 
-.game-screen.active #shooterCanvas {
-  width: min(96vw, 900px);
-}
-
 .game-screen.active #tetrisCanvas {
-  height: min(calc(100vh - 178px), 640px);
+  height: min(calc(100vh - 246px), 580px);
   width: auto;
 }
 
@@ -760,84 +703,115 @@ small {
 .xiangqi-board {
   display: none;
   position: relative;
-  width: min(640px, 88vw);
+  width: min(94vw, 660px, calc((100vh - 118px) * 0.9));
   aspect-ratio: 9 / 10;
-  border: 5px solid #2e2118;
-  border-radius: 8px;
+  border: 7px solid #53331e;
+  border-radius: 18px;
   background:
-    linear-gradient(90deg, rgba(255, 228, 156, 0.22), transparent 9%, transparent 91%, rgba(102, 63, 29, 0.18)),
-    linear-gradient(180deg, #e5b86c, #d9a157 48%, #e2ae62);
+    radial-gradient(circle at 18% 14%, rgba(255, 239, 177, 0.78), rgba(255, 239, 177, 0) 28%),
+    linear-gradient(90deg, rgba(118, 69, 29, 0.18), transparent 9%, transparent 91%, rgba(118, 69, 29, 0.18)),
+    linear-gradient(180deg, #f3c879 0%, #dfad5f 48%, #edbf70 100%);
   box-shadow:
-    inset 0 0 0 9px rgba(85, 48, 22, 0.12),
-    inset 0 0 42px rgba(90, 52, 18, 0.18),
-    0 24px 70px rgba(0, 0, 0, 0.24);
+    inset 0 0 0 5px rgba(255, 238, 181, 0.28),
+    inset 0 0 0 13px rgba(84, 48, 22, 0.11),
+    inset 0 0 44px rgba(92, 48, 16, 0.2),
+    0 26px 66px rgba(46, 29, 14, 0.24);
   overflow: visible;
+  touch-action: manipulation;
 }
 
 .x-line {
   position: absolute;
-  background: rgba(69, 42, 22, 0.78);
+  background: rgba(79, 48, 24, 0.72);
+  border-radius: 999px;
   pointer-events: none;
 }
 
 .x-river {
   position: absolute;
-  left: 7%;
-  right: 7%;
-  top: 45%;
-  height: 10%;
+  left: 8.2%;
+  right: 8.2%;
+  top: 45.35%;
+  height: 9.3%;
   display: grid;
   place-items: center;
-  border-top: 4px solid rgba(69, 42, 22, 0.72);
-  border-bottom: 4px solid rgba(69, 42, 22, 0.72);
-  color: rgba(89, 54, 26, 0.52);
+  border-top: 3px solid rgba(79, 48, 24, 0.72);
+  border-bottom: 3px solid rgba(79, 48, 24, 0.72);
+  color: rgba(90, 54, 24, 0.54);
   font-size: clamp(22px, 5vw, 40px);
   font-weight: 900;
   letter-spacing: 0;
   pointer-events: none;
+  text-shadow: 0 1px 0 rgba(255, 230, 165, 0.8);
+}
+
+.x-star {
+  position: absolute;
+  width: clamp(10px, 2vw, 15px);
+  aspect-ratio: 1;
+  transform: translate(-50%, -50%) rotate(45deg);
+  border: 2px solid rgba(79, 48, 24, 0.72);
+  border-radius: 2px;
+  background: rgba(246, 204, 125, 0.65);
+  box-shadow: 0 0 0 4px rgba(244, 195, 110, 0.28);
+  pointer-events: none;
+  z-index: 1;
 }
 
 .piece {
   position: absolute;
   display: grid;
   place-items: center;
-  width: clamp(32px, 8.1%, 58px);
+  width: clamp(36px, 9.2%, 64px);
   aspect-ratio: 1;
   transform: translate(-50%, -50%);
   border-radius: 50%;
-  border: 4px solid #6f3d20;
-  background: radial-gradient(circle at 35% 28%, #fff2c6, #f2d18e 70%, #d9a962);
+  border: 4px solid #74431f;
+  background:
+    radial-gradient(circle at 34% 27%, #fff7d4 0 34%, #f1d396 66%, #d39d57 100%);
   color: #1c1712;
-  font-size: clamp(17px, 3.3vw, 28px);
+  font-size: clamp(18px, 3.6vw, 30px);
   font-weight: 900;
-  box-shadow: 0 5px 0 rgba(68, 36, 18, 0.5), 0 13px 24px rgba(35, 20, 12, 0.28);
+  box-shadow:
+    inset 0 -4px 0 rgba(103, 58, 24, 0.18),
+    0 5px 0 rgba(68, 36, 18, 0.56),
+    0 13px 24px rgba(35, 20, 12, 0.28);
   z-index: 2;
   touch-action: manipulation;
+  transition: transform 0.12s ease, box-shadow 0.12s ease, outline-color 0.12s ease;
 }
 
 .piece.red {
-  color: #c92620;
+  color: #c52a23;
+  border-color: #8a4926;
 }
 
 .piece.selected {
-  outline: 4px solid rgba(84, 199, 160, 0.92);
-  outline-offset: 3px;
+  transform: translate(-50%, -56%);
+  outline: 4px solid rgba(88, 204, 2, 0.95);
+  outline-offset: 4px;
+  box-shadow:
+    inset 0 -4px 0 rgba(103, 58, 24, 0.18),
+    0 7px 0 rgba(68, 36, 18, 0.52),
+    0 18px 30px rgba(35, 20, 12, 0.3),
+    0 0 0 10px rgba(88, 204, 2, 0.16);
 }
 
 .move-dot {
   position: absolute;
-  width: clamp(18px, 4.2%, 30px);
+  width: clamp(18px, 4.8%, 34px);
   aspect-ratio: 1;
   transform: translate(-50%, -50%);
   border-radius: 50%;
-  background: rgba(88, 204, 2, 0.78);
-  box-shadow: 0 0 0 8px rgba(88, 204, 2, 0.18);
+  border: 3px solid rgba(255, 255, 255, 0.86);
+  background: rgba(88, 204, 2, 0.82);
+  box-shadow: 0 0 0 8px rgba(88, 204, 2, 0.18), 0 10px 18px rgba(56, 112, 38, 0.18);
   z-index: 3;
 }
 
 .move-dot.capture {
   background: rgba(255, 107, 95, 0.9);
-  box-shadow: 0 0 0 8px rgba(255, 107, 95, 0.2);
+  box-shadow: 0 0 0 8px rgba(255, 107, 95, 0.2), 0 10px 18px rgba(120, 44, 34, 0.18);
 }
 
 .modal {
@@ -894,6 +868,24 @@ small {
   .game-menu {
     grid-template-columns: 1fr;
     gap: 12px;
+  }
+
+  .category-menu {
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+
+  .category-card {
+    min-height: 168px;
+    border-radius: 24px;
+    padding: 22px;
+  }
+
+  .category-card::after {
+    width: 64px;
+    right: 18px;
+    bottom: 18px;
+    border-radius: 20px;
   }
 
   .game-choice {
@@ -979,7 +971,7 @@ small {
   }
 
   .game-screen.active #tetrisCanvas {
-    height: min(calc(100vh - 224px), 560px);
+    height: min(calc(100vh - 250px), 540px);
   }
 
   .tetris-wrap .game-canvas {
@@ -1014,8 +1006,7 @@ small {
 
 @media (pointer: fine) and (min-width: 861px) {
   .joystick.show,
-  .tetris-controls.show,
-  .arcade-controls.show {
+  .tetris-controls.show {
     display: none;
   }
 }

@@ -31,10 +31,6 @@ const ui = {
   tetrisRight: $("tetrisRight"),
   tetrisRotate: $("tetrisRotate"),
   tetrisControls: $("tetrisControls"),
-  arcadeLeft: $("arcadeLeft"),
-  arcadeRight: $("arcadeRight"),
-  arcadeAction: $("arcadeAction"),
-  arcadeControls: $("arcadeControls"),
   snakeStick: $("snakeStick"),
   joystickKnob: $("joystickKnob"),
   speedControl: $("speedControl"),
@@ -91,10 +87,6 @@ function showResult(title, message) {
   ui.modalMessage.textContent = `${message} 本局已经无法继续进行。`;
   ui.modal.classList.add("show");
 }
-
-window.addEventListener("load", () => {
-  setTimeout(() => $("splash")?.remove(), 6200);
-});
 
 function roundRect(ctx, x, y, w, h, r) {
   ctx.beginPath();
@@ -614,8 +606,8 @@ const xiangqi = {
   current: "r",
   ended: false,
   thinking: false,
-  padX: 7,
-  padY: 5.8,
+  padX: 8.2,
+  padY: 6.6,
   reset() {
     clearTimer();
     hideResult();
@@ -650,6 +642,7 @@ const xiangqi = {
       this.line(i, 5, i, 9);
     }
     [[3, 0, 5, 2], [5, 0, 3, 2], [3, 7, 5, 9], [5, 7, 3, 9]].forEach((l) => this.line(...l));
+    [[1, 2], [7, 2], [0, 3], [2, 3], [4, 3], [6, 3], [8, 3], [1, 7], [7, 7], [0, 6], [2, 6], [4, 6], [6, 6], [8, 6]].forEach(([x, y]) => this.star(x, y));
     this.board.forEach((row, y) => row.forEach((p, x) => {
       if (!p) return;
       const b = document.createElement("button");
@@ -717,6 +710,14 @@ const xiangqi = {
     l.style.transformOrigin = "0 0";
     l.style.transform = `rotate(${ang}deg)`;
     this.el.appendChild(l);
+  },
+  star(x, y) {
+    const mark = document.createElement("div");
+    mark.className = "x-star";
+    const point = this.boardPoint(x, y);
+    mark.style.left = `${point.x}%`;
+    mark.style.top = `${point.y}%`;
+    this.el.appendChild(mark);
   },
   pick(x, y) {
     if (this.ended || this.thinking) return;
@@ -1128,242 +1129,6 @@ const xiangqi = {
   },
 };
 
-function arcadeLoop(game, fn, ms = 33) {
-  clearTimer();
-  runningLoop = setInterval(fn, ms);
-  setStats({ score: game.score || 0, status: "进行中" });
-}
-
-const shooter = {
-  canvas: $("shooterCanvas"),
-  score: 0,
-  hero: { x: 80, y: 360, vx: 0 },
-  bullets: [],
-  enemies: [],
-  tick: 0,
-  reset() {
-    clearTimer();
-    hideResult();
-    this.score = 0;
-    this.hero = { x: 80, y: 360, vx: 0 };
-    this.bullets = [];
-    this.enemies = [];
-    this.tick = 0;
-    setStats({ score: 0, status: "准备开始" });
-    this.draw();
-  },
-  start() {
-    arcadeLoop(this, () => this.step());
-  },
-  move(dir) {
-    this.hero.vx = dir * 6;
-  },
-  stop() {
-    this.hero.vx = 0;
-  },
-  action() {
-    this.bullets.push({ x: this.hero.x + 34, y: this.hero.y - 18, vx: 11 });
-  },
-  step() {
-    this.tick++;
-    this.hero.x = Math.max(24, Math.min(650, this.hero.x + this.hero.vx));
-    if (this.tick % 42 === 0) this.enemies.push({ x: 720, y: 332 + Math.random() * 80, vx: 2.3 + Math.random() * 1.4 });
-    this.bullets.forEach((b) => b.x += b.vx);
-    this.enemies.forEach((e) => e.x -= e.vx);
-    this.bullets = this.bullets.filter((b) => b.x < 740);
-    for (const e of this.enemies) {
-      for (const b of this.bullets) {
-        if (Math.abs(e.x - b.x) < 24 && Math.abs(e.y - b.y) < 24) {
-          e.hit = true;
-          b.hit = true;
-          this.score += 20;
-        }
-      }
-      if (Math.abs(e.x - this.hero.x) < 34 && Math.abs(e.y - this.hero.y) < 34) {
-        this.end();
-        return;
-      }
-    }
-    this.enemies = this.enemies.filter((e) => !e.hit && e.x > -40);
-    this.bullets = this.bullets.filter((b) => !b.hit);
-    setStats({ score: this.score, status: "进行中" });
-    this.draw();
-  },
-  end() {
-    setBest(this.score);
-    setStats({ score: this.score, status: "游戏结束" });
-    showResult("像素突击结束", `最终分数：${this.score}。`);
-  },
-  draw() {
-    const ctx = this.canvas.getContext("2d");
-    ctx.clearRect(0, 0, 720, 480);
-    ctx.fillStyle = "#9ee7ff";
-    ctx.fillRect(0, 0, 720, 480);
-    ctx.fillStyle = "#74c365";
-    ctx.fillRect(0, 390, 720, 90);
-    ctx.fillStyle = "#263238";
-    roundRect(ctx, this.hero.x - 22, this.hero.y - 48, 44, 54, 8);
-    ctx.fillStyle = "#ffc83d";
-    roundRect(ctx, this.hero.x + 14, this.hero.y - 28, 34, 10, 5);
-    ctx.fillStyle = "#ff6b5f";
-    this.bullets.forEach((b) => roundRect(ctx, b.x, b.y, 18, 6, 3));
-    this.enemies.forEach((e) => {
-      ctx.fillStyle = "#7b4dff";
-      roundRect(ctx, e.x - 22, e.y - 22, 44, 44, 8);
-      ctx.fillStyle = "#fff";
-      ctx.fillRect(e.x - 8, e.y - 8, 6, 6);
-      ctx.fillRect(e.x + 5, e.y - 8, 6, 6);
-    });
-  },
-};
-
-const hoops = {
-  canvas: $("hoopsCanvas"),
-  score: 0,
-  power: 0,
-  charging: false,
-  ball: null,
-  reset() {
-    clearTimer();
-    hideResult();
-    this.score = 0;
-    this.power = 0;
-    this.charging = false;
-    this.ball = null;
-    setStats({ score: 0, status: "准备开始" });
-    this.draw();
-  },
-  start() {
-    arcadeLoop(this, () => this.step());
-  },
-  move() {},
-  stop() {},
-  action() {
-    if (this.ball) return;
-    if (!this.charging) {
-      this.charging = true;
-      this.power = 0;
-    } else {
-      const p = 10 + this.power * 0.18;
-      this.ball = { x: 88, y: 438, vx: 6.2, vy: -p };
-      this.charging = false;
-    }
-  },
-  step() {
-    if (this.charging) this.power = (this.power + 3) % 100;
-    if (this.ball) {
-      this.ball.x += this.ball.vx;
-      this.ball.y += this.ball.vy;
-      this.ball.vy += 0.42;
-      if (this.ball.x > 423 && this.ball.x < 484 && this.ball.y > 170 && this.ball.y < 220 && this.ball.vy > 0) {
-        this.score += 30;
-        this.ball = null;
-      } else if (this.ball.y > 580 || this.ball.x > 590) {
-        this.ball = null;
-      }
-    }
-    setStats({ score: this.score, status: this.charging ? "蓄力中" : "进行中" });
-    this.draw();
-  },
-  draw() {
-    const ctx = this.canvas.getContext("2d");
-    ctx.clearRect(0, 0, 560, 560);
-    ctx.fillStyle = "#ffe9b5";
-    ctx.fillRect(0, 0, 560, 560);
-    ctx.fillStyle = "#efb166";
-    ctx.fillRect(0, 430, 560, 130);
-    ctx.strokeStyle = "#1f2a33";
-    ctx.lineWidth = 8;
-    ctx.beginPath(); ctx.moveTo(470, 120); ctx.lineTo(470, 430); ctx.stroke();
-    ctx.strokeStyle = "#ff6b5f";
-    ctx.lineWidth = 7;
-    ctx.beginPath(); ctx.arc(455, 200, 36, 0, Math.PI, false); ctx.stroke();
-    ctx.fillStyle = "#243224";
-    roundRect(ctx, 56, 368, 42, 70, 10);
-    ctx.fillStyle = "#f47b20";
-    const ball = this.ball || { x: 88, y: 438 };
-    ctx.beginPath(); ctx.arc(ball.x, ball.y, 17, 0, Math.PI * 2); ctx.fill();
-    if (this.charging) {
-      ctx.fillStyle = "#58cc02";
-      roundRect(ctx, 40, 40, 4 * this.power, 18, 9);
-    }
-  },
-};
-
-const galaxy = {
-  canvas: $("galaxyCanvas"),
-  score: 0,
-  ship: { x: 280, y: 470, vx: 0 },
-  bullets: [],
-  rocks: [],
-  tick: 0,
-  reset() {
-    clearTimer();
-    hideResult();
-    this.score = 0;
-    this.ship = { x: 280, y: 470, vx: 0 };
-    this.bullets = [];
-    this.rocks = [];
-    this.tick = 0;
-    setStats({ score: 0, status: "准备开始" });
-    this.draw();
-  },
-  start() {
-    arcadeLoop(this, () => this.step());
-  },
-  move(dir) {
-    this.ship.vx = dir * 7;
-  },
-  stop() {
-    this.ship.vx = 0;
-  },
-  action() {
-    this.bullets.push({ x: this.ship.x, y: this.ship.y - 20, vy: -9 });
-  },
-  step() {
-    this.tick++;
-    this.ship.x = Math.max(30, Math.min(530, this.ship.x + this.ship.vx));
-    if (this.tick % 30 === 0) this.rocks.push({ x: 35 + Math.random() * 490, y: -20, vy: 2.5 + Math.random() * 2 });
-    this.bullets.forEach((b) => b.y += b.vy);
-    this.rocks.forEach((r) => r.y += r.vy);
-    for (const r of this.rocks) {
-      for (const b of this.bullets) {
-        if (Math.hypot(r.x - b.x, r.y - b.y) < 24) {
-          r.hit = true; b.hit = true; this.score += 15;
-        }
-      }
-      if (Math.hypot(r.x - this.ship.x, r.y - this.ship.y) < 28) {
-        setBest(this.score);
-        showResult("银河守卫结束", `最终分数：${this.score}。`);
-        return;
-      }
-    }
-    this.rocks = this.rocks.filter((r) => !r.hit && r.y < 590);
-    this.bullets = this.bullets.filter((b) => !b.hit && b.y > -20);
-    setStats({ score: this.score, status: "进行中" });
-    this.draw();
-  },
-  draw() {
-    const ctx = this.canvas.getContext("2d");
-    ctx.clearRect(0, 0, 560, 560);
-    ctx.fillStyle = "#111827";
-    ctx.fillRect(0, 0, 560, 560);
-    ctx.fillStyle = "#1cb0f6";
-    ctx.beginPath();
-    ctx.moveTo(this.ship.x, this.ship.y - 26);
-    ctx.lineTo(this.ship.x - 22, this.ship.y + 22);
-    ctx.lineTo(this.ship.x + 22, this.ship.y + 22);
-    ctx.closePath();
-    ctx.fill();
-    ctx.fillStyle = "#ffc83d";
-    this.bullets.forEach((b) => roundRect(ctx, b.x - 3, b.y - 12, 6, 18, 3));
-    this.rocks.forEach((r) => {
-      ctx.fillStyle = "#a78bfa";
-      ctx.beginPath(); ctx.arc(r.x, r.y, 20, 0, Math.PI * 2); ctx.fill();
-    });
-  },
-};
-
 const games = {
   snake: {
     name: "贪吃蛇",
@@ -1393,33 +1158,11 @@ const games = {
     reset: () => xiangqi.reset(),
     start: () => xiangqi.start(),
   },
-  shooter: {
-    name: "像素突击",
-    help: "左右移动，动作键射击。原创街机风横版突击。",
-    canvas: shooter.canvas,
-    reset: () => shooter.reset(),
-    start: () => shooter.start(),
-  },
-  hoops: {
-    name: "街头投篮",
-    help: "点击动作键开始蓄力，再点一次投篮。",
-    canvas: hoops.canvas,
-    reset: () => hoops.reset(),
-    start: () => hoops.start(),
-  },
-  galaxy: {
-    name: "银河守卫",
-    help: "左右移动，动作键射击，击落陨石。",
-    canvas: galaxy.canvas,
-    reset: () => galaxy.reset(),
-    start: () => galaxy.start(),
-  },
 };
 
 const categoryNames = {
   mini: "小游戏",
   board: "棋牌类",
-  arcade: "街机类",
 };
 
 function showLibrary(category) {
@@ -1438,6 +1181,7 @@ function switchGame(id) {
   clearTimer();
   hideResult();
   activeGame = id;
+  ui.gameScreen.dataset.game = id;
   ui.home.classList.remove("active");
   ui.library.classList.remove("active");
   ui.gameScreen.classList.add("active");
@@ -1453,7 +1197,6 @@ function switchGame(id) {
   ui.difficultyControl.classList.toggle("hidden", id !== "gomoku" && id !== "xiangqi");
   ui.snakeStick.classList.toggle("show", id === "snake");
   ui.tetrisControls.classList.toggle("show", id === "tetris");
-  ui.arcadeControls.classList.toggle("show", id === "shooter" || id === "hoops" || id === "galaxy");
   ui.boardTip.classList.toggle("show", id === "gomoku" || id === "xiangqi");
   games[id].reset();
   games[id].start();
@@ -1466,9 +1209,9 @@ function showHome() {
   ui.gameScreen.classList.remove("active");
   ui.library.classList.remove("active");
   ui.home.classList.add("active");
+  ui.gameScreen.dataset.game = "";
   ui.snakeStick.classList.remove("show");
   ui.tetrisControls.classList.remove("show");
-  ui.arcadeControls.classList.remove("show");
   ui.boardTip.classList.remove("show");
   document.querySelectorAll(".game-canvas, .xiangqi-board, .tetris-wrap").forEach((c) => c.classList.remove("active"));
   document.querySelectorAll(".game-choice").forEach((b) => b.classList.remove("active"));
@@ -1515,20 +1258,6 @@ bindHoldButton(ui.tetrisRight, () => {
 ui.tetrisRotate.addEventListener("click", (e) => {
   e.stopPropagation();
   if (activeGame === "tetris") tetris.rotate();
-});
-bindHoldButton(ui.arcadeLeft, () => {
-  if (games[activeGame]?.move) games[activeGame].move(-1);
-});
-bindHoldButton(ui.arcadeRight, () => {
-  if (games[activeGame]?.move) games[activeGame].move(1);
-});
-["pointerup", "pointercancel", "pointerleave"].forEach((eventName) => {
-  ui.arcadeLeft.addEventListener(eventName, () => games[activeGame]?.stop?.());
-  ui.arcadeRight.addEventListener(eventName, () => games[activeGame]?.stop?.());
-});
-ui.arcadeAction.addEventListener("click", (e) => {
-  e.stopPropagation();
-  games[activeGame]?.action?.();
 });
 ui.snakeSpeed.addEventListener("change", () => {
   if (activeGame !== "snake" || snake.ended || !runningLoop) return;
@@ -1594,20 +1323,6 @@ document.addEventListener("keydown", (e) => {
       e.preventDefault();
       tetris.hardDrop();
     }
-  }
-  if (["shooter", "hoops", "galaxy"].includes(activeGame)) {
-    if (["ArrowLeft", "a", "A"].includes(e.key)) games[activeGame].move?.(-1);
-    if (["ArrowRight", "d", "D"].includes(e.key)) games[activeGame].move?.(1);
-    if (e.code === "Space" || e.key === "ArrowUp" || e.key === "w" || e.key === "W") {
-      e.preventDefault();
-      games[activeGame].action?.();
-    }
-  }
-});
-
-document.addEventListener("keyup", (e) => {
-  if (["shooter", "hoops", "galaxy"].includes(activeGame) && ["ArrowLeft", "ArrowRight", "a", "A", "d", "D"].includes(e.key)) {
-    games[activeGame].stop?.();
   }
 });
 
