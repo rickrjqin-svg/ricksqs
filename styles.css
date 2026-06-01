@@ -1,14 +1,15 @@
 :root {
-  color-scheme: dark;
-  --bg: #111416;
-  --panel: #1b2024;
-  --panel-2: #232a2f;
-  --text: #f5f1e8;
-  --muted: #b9c1bb;
-  --line: rgba(255, 255, 255, 0.12);
-  --gold: #e8b653;
-  --jade: #54c7a0;
-  --coral: #ef7866;
+  color-scheme: light;
+  --bg: #f5fbef;
+  --panel: #ffffff;
+  --panel-2: #eef7e8;
+  --text: #243224;
+  --muted: #6d7b69;
+  --line: rgba(36, 50, 36, 0.12);
+  --gold: #ffc83d;
+  --jade: #58cc02;
+  --coral: #ff6b5f;
+  --blue: #1cb0f6;
   --ink: #151515;
 }
 
@@ -22,8 +23,8 @@ body {
   font-family:
     Inter, "Microsoft YaHei", "PingFang SC", system-ui, -apple-system, sans-serif;
   background:
-    radial-gradient(circle at top left, rgba(84, 199, 160, 0.16), transparent 34rem),
-    linear-gradient(135deg, #111416 0%, #1b2024 55%, #251f1b 100%);
+    radial-gradient(circle at top left, rgba(88, 204, 2, 0.22), transparent 28rem),
+    linear-gradient(180deg, #f7fff0 0%, #eef8e8 100%);
   color: var(--text);
 }
 
@@ -36,7 +37,7 @@ body {
   align-content: center;
   gap: 18px;
   background: #fff;
-  animation: splashExit 0.7s ease 5.3s forwards;
+  animation: splashExit 0.38s ease 1.45s forwards;
 }
 
 .splash-logo-wrap {
@@ -48,7 +49,7 @@ body {
   background: #fff;
   opacity: 0;
   transform: scale(0.92);
-  animation: logoAppear 2.6s ease forwards;
+  animation: logoAppear 1.1s ease forwards;
   box-shadow: 0 18px 52px rgba(22, 24, 28, 0.08);
 }
 
@@ -111,39 +112,101 @@ button {
 }
 
 .home-screen,
+.library-screen,
 .game-screen {
   display: none;
 }
 
 .home-screen.active,
+.library-screen.active,
 .game-screen.active {
   display: block;
+}
+
+.category-menu {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 18px;
+  margin: 18px auto 0;
+  max-width: 980px;
+}
+
+.category-card {
+  min-height: 210px;
+  border: 2px solid rgba(36, 50, 36, 0.08);
+  border-radius: 26px;
+  color: var(--text);
+  padding: 24px;
+  text-align: left;
+  box-shadow: 0 9px 0 rgba(36, 50, 36, 0.08), 0 20px 48px rgba(87, 123, 65, 0.14);
+}
+
+.category-card strong {
+  display: block;
+  font-size: clamp(30px, 6vw, 50px);
+  line-height: 1;
+}
+
+.category-card span {
+  display: block;
+  margin-top: 14px;
+  color: var(--muted);
+  font-weight: 750;
+}
+
+.mini-card { background: linear-gradient(135deg, rgba(88, 204, 2, 0.32), #fff); }
+.board-card { background: linear-gradient(135deg, rgba(255, 200, 61, 0.36), #fff); }
+.arcade-card { background: linear-gradient(135deg, rgba(28, 176, 246, 0.28), #fff); }
+
+.library-header {
+  display: grid;
+  grid-template-columns: 140px 1fr 140px;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.library-header div {
+  grid-column: 2;
+  text-align: center;
+}
+
+.ghost-btn,
+.settings-btn {
+  min-height: 46px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: var(--panel);
+  color: var(--text);
+  font-weight: 850;
+  box-shadow: 0 5px 0 rgba(36, 50, 36, 0.08);
 }
 
 .game-menu {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 16px;
-  margin-top: 16px;
+  gap: 18px;
+  margin: 18px auto 0;
+  max-width: 840px;
 }
 
 .game-choice {
-  min-height: 170px;
-  border: 1px solid var(--line);
-  border-radius: 8px;
+  min-height: 154px;
+  border: 2px solid rgba(36, 50, 36, 0.08);
+  border-radius: 22px;
   background:
-    linear-gradient(135deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.02)),
+    linear-gradient(135deg, rgba(255, 255, 255, 0.92), rgba(255, 255, 255, 0.72)),
     var(--panel);
   color: var(--text);
   padding: 22px;
   text-align: left;
-  box-shadow: 0 18px 48px rgba(0, 0, 0, 0.18);
+  box-shadow: 0 8px 0 rgba(36, 50, 36, 0.08), 0 18px 48px rgba(87, 123, 65, 0.12);
   transition: transform 0.16s ease, border-color 0.16s ease, background 0.16s ease;
 }
 
 .game-choice:hover {
   transform: translateY(-2px);
-  border-color: rgba(232, 182, 83, 0.62);
+  border-color: rgba(88, 204, 2, 0.58);
 }
 
 .game-choice strong {
@@ -159,10 +222,12 @@ button {
   font-size: 15px;
 }
 
-.snake-choice { background: linear-gradient(135deg, rgba(84, 199, 160, 0.22), rgba(255, 255, 255, 0.03)), var(--panel); }
-.tetris-choice { background: linear-gradient(135deg, rgba(102, 194, 255, 0.2), rgba(255, 255, 255, 0.03)), var(--panel); }
-.gomoku-choice { background: linear-gradient(135deg, rgba(232, 182, 83, 0.22), rgba(255, 255, 255, 0.03)), var(--panel); }
-.xiangqi-choice { background: linear-gradient(135deg, rgba(239, 120, 102, 0.22), rgba(255, 255, 255, 0.03)), var(--panel); }
+.snake-choice { background: linear-gradient(135deg, rgba(88, 204, 2, 0.22), rgba(255, 255, 255, 0.86)), var(--panel); }
+.tetris-choice { background: linear-gradient(135deg, rgba(28, 176, 246, 0.22), rgba(255, 255, 255, 0.86)), var(--panel); }
+.gomoku-choice { background: linear-gradient(135deg, rgba(255, 200, 61, 0.26), rgba(255, 255, 255, 0.86)), var(--panel); }
+.xiangqi-choice { background: linear-gradient(135deg, rgba(255, 107, 95, 0.22), rgba(255, 255, 255, 0.86)), var(--panel); }
+.shooter-choice { background: linear-gradient(135deg, rgba(160, 93, 255, 0.2), rgba(255, 255, 255, 0.86)), var(--panel); }
+.hoops-choice { background: linear-gradient(135deg, rgba(255, 150, 38, 0.24), rgba(255, 255, 255, 0.86)), var(--panel); }
 
 .game-header {
   display: grid;
@@ -170,6 +235,66 @@ button {
   align-items: center;
   gap: 12px;
   margin-bottom: 12px;
+}
+
+.play-hud {
+  position: fixed;
+  top: 10px;
+  left: 12px;
+  right: 12px;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  pointer-events: none;
+}
+
+.hud-pills {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+}
+
+.hud-pills span,
+.board-tip {
+  min-height: 34px;
+  display: grid;
+  place-items: center;
+  border-radius: 999px;
+  padding: 0 13px;
+  background: rgba(255, 255, 255, 0.82);
+  color: var(--text);
+  font-weight: 900;
+  box-shadow: 0 5px 18px rgba(87, 123, 65, 0.14);
+}
+
+.board-tip {
+  display: none;
+  position: absolute;
+  left: 50%;
+  bottom: 18px;
+  transform: translateX(-50%);
+  z-index: 4;
+}
+
+.board-tip.show {
+  display: grid;
+}
+
+.play-hud h1 {
+  font-size: clamp(22px, 5vw, 38px);
+  text-shadow: 0 2px 18px rgba(255, 255, 255, 0.75);
+}
+
+.play-hud .eyebrow {
+  margin-bottom: 2px;
+}
+
+.play-hud .settings-btn {
+  pointer-events: auto;
+  min-width: 82px;
 }
 
 .game-header h1 {
@@ -184,10 +309,11 @@ button {
 .back-btn {
   min-height: 46px;
   border: 1px solid var(--line);
-  border-radius: 8px;
+  border-radius: 14px;
   background: var(--panel);
   color: var(--text);
   font-weight: 850;
+  box-shadow: 0 5px 0 rgba(36, 50, 36, 0.08);
 }
 
 .compact-hero {
@@ -207,11 +333,11 @@ button {
   min-height: 176px;
   padding: 28px;
   border: 1px solid var(--line);
-  border-radius: 8px;
+  border-radius: 20px;
   background:
-    linear-gradient(120deg, rgba(232, 182, 83, 0.18), transparent 45%),
-    linear-gradient(180deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.02));
-  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.24);
+    linear-gradient(120deg, rgba(88, 204, 2, 0.18), transparent 45%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.96), rgba(255, 255, 255, 0.76));
+  box-shadow: 0 8px 0 rgba(36, 50, 36, 0.08), 0 24px 70px rgba(87, 123, 65, 0.14);
 }
 
 .eyebrow {
@@ -293,8 +419,8 @@ small {
 
 .tab.active,
 .controls .primary {
-  background: linear-gradient(135deg, var(--gold), #d7813d);
-  color: #1b1408;
+  background: linear-gradient(135deg, var(--jade), #42a800);
+  color: #fff;
 }
 
 .stage {
@@ -304,12 +430,38 @@ small {
   align-items: stretch;
 }
 
+.game-screen.active {
+  position: fixed;
+  inset: 0;
+  z-index: 5;
+  background: linear-gradient(180deg, #f7fff0, #eaf7e3);
+  overflow: hidden;
+}
+
+.game-screen .game-area {
+  position: fixed;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  min-height: 100vh;
+  padding: 72px 12px 18px;
+  overflow: hidden;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+  background: transparent;
+}
+
+.utility-panel {
+  display: none;
+}
+
 .side-panel,
 .game-area {
   border: 1px solid var(--line);
-  border-radius: 8px;
-  background: rgba(27, 32, 36, 0.86);
-  box-shadow: 0 18px 50px rgba(0, 0, 0, 0.2);
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.88);
+  box-shadow: 0 8px 0 rgba(36, 50, 36, 0.08), 0 18px 50px rgba(87, 123, 65, 0.12);
 }
 
 .side-panel {
@@ -453,19 +605,54 @@ small {
 
 .tetris-controls button {
   min-height: 52px;
-  border-radius: 8px;
-  background: rgba(255, 255, 255, 0.12);
-  color: #081713;
+  border-radius: 14px;
+  background: rgba(36, 50, 36, 0.1);
   color: var(--text);
   font-weight: 900;
-  border: 1px solid rgba(255, 255, 255, 0.18);
-  box-shadow: 0 14px 34px rgba(0, 0, 0, 0.28);
+  border: 1px solid rgba(36, 50, 36, 0.12);
+  box-shadow: 0 10px 24px rgba(87, 123, 65, 0.18);
   backdrop-filter: blur(10px);
 }
 
 .tetris-controls #fallBtn {
+  grid-column: 1 / -1;
   background: linear-gradient(135deg, var(--jade), #2e9d80);
-  color: #081713;
+  color: #fff;
+}
+
+.tetris-controls #tetrisRotate {
+  background: linear-gradient(135deg, var(--blue), #1687d9);
+  color: #fff;
+}
+
+.arcade-controls.show {
+  display: grid;
+}
+
+.arcade-controls {
+  display: none;
+  position: absolute;
+  left: 50%;
+  bottom: 18px;
+  transform: translateX(-50%);
+  grid-template-columns: repeat(3, minmax(74px, 1fr));
+  gap: 10px;
+  width: min(330px, calc(100% - 28px));
+}
+
+.arcade-controls button {
+  min-height: 52px;
+  border-radius: 14px;
+  background: rgba(36, 50, 36, 0.1);
+  color: var(--text);
+  font-weight: 900;
+  border: 1px solid rgba(36, 50, 36, 0.12);
+  box-shadow: 0 10px 24px rgba(87, 123, 65, 0.18);
+}
+
+.arcade-controls #arcadeAction {
+  background: linear-gradient(135deg, var(--blue), #1687d9);
+  color: #fff;
 }
 
 .game-canvas {
@@ -475,6 +662,26 @@ small {
   border-radius: 8px;
   background: #101416;
   box-shadow: inset 0 0 0 1px var(--line), 0 22px 70px rgba(0, 0, 0, 0.28);
+}
+
+.game-screen.active .game-canvas {
+  max-height: calc(100vh - 96px);
+}
+
+.game-screen.active #snakeCanvas,
+.game-screen.active #gomokuCanvas,
+.game-screen.active #hoopsCanvas,
+.game-screen.active #galaxyCanvas {
+  width: min(94vw, calc(100vh - 100px));
+}
+
+.game-screen.active #shooterCanvas {
+  width: min(96vw, 900px);
+}
+
+.game-screen.active #tetrisCanvas {
+  height: min(78vh, 620px);
+  width: auto;
 }
 
 .game-canvas.active,
@@ -584,6 +791,22 @@ small {
 .piece.selected {
   outline: 4px solid rgba(84, 199, 160, 0.92);
   outline-offset: 3px;
+}
+
+.move-dot {
+  position: absolute;
+  width: clamp(18px, 4.2%, 30px);
+  aspect-ratio: 1;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  background: rgba(88, 204, 2, 0.78);
+  box-shadow: 0 0 0 8px rgba(88, 204, 2, 0.18);
+  z-index: 3;
+}
+
+.move-dot.capture {
+  background: rgba(255, 107, 95, 0.9);
+  box-shadow: 0 0 0 8px rgba(255, 107, 95, 0.2);
 }
 
 .modal {
@@ -722,7 +945,8 @@ small {
 
 @media (pointer: fine) and (min-width: 861px) {
   .joystick.show,
-  .tetris-controls.show {
+  .tetris-controls.show,
+  .arcade-controls.show {
     display: none;
   }
 }

@@ -9,127 +9,92 @@
   <body>
     <div id="splash" class="splash">
       <div class="splash-logo-wrap">
-        <img src="assets/logo.jpg" alt="Rick的小游戏 Logo" />
-      </div>
-      <div class="splash-title">
-        <span>R</span><span>i</span><span>c</span><span>k</span><span>的</span><span>小游戏</span>
+        <img src="assets/logo-transparent.png" alt="Rick的小游戏 Logo" />
       </div>
     </div>
 
     <main class="app-shell">
       <section id="homeScreen" class="home-screen active">
-        <section class="hero">
+        <section class="hero home-hero">
           <div>
-            <p class="eyebrow">Arcade Collection</p>
+            <p class="eyebrow">Rick Arcade</p>
             <h1>Rick的小游戏</h1>
-            <p class="subtitle">选择一个游戏，进入专属操作界面。</p>
+            <p class="subtitle">选择一个分类，进入全屏游戏体验。</p>
           </div>
           <div class="hero-stats">
-            <div><span>4 款</span><small>小游戏</small></div>
+            <div><span>3 类</span><small>游戏节点</small></div>
             <div><span>离线</span><small>本地运行</small></div>
           </div>
         </section>
 
-        <section class="game-menu" aria-label="游戏大厅">
-          <button class="game-choice snake-choice" data-game="snake">
+        <section class="category-menu" aria-label="游戏分类">
+          <button class="category-card mini-card" data-category="mini">
+            <strong>小游戏</strong>
+            <span>贪吃蛇、俄罗斯方块</span>
+          </button>
+          <button class="category-card board-card" data-category="board">
+            <strong>棋牌类</strong>
+            <span>五子棋、象棋</span>
+          </button>
+          <button class="category-card arcade-card" data-category="arcade">
+            <strong>街机类</strong>
+            <span>原创突击、街头投篮、太空射击</span>
+          </button>
+        </section>
+      </section>
+
+      <section id="libraryScreen" class="library-screen">
+        <header class="library-header">
+          <button id="libraryBackBtn" class="ghost-btn" type="button">返回主页</button>
+          <div>
+            <p class="eyebrow">Choose Game</p>
+            <h1 id="categoryTitle">小游戏</h1>
+          </div>
+        </header>
+        <section id="gameMenu" class="game-menu" aria-label="游戏列表">
+          <button class="game-choice snake-choice" data-game="snake" data-category="mini">
             <strong>贪吃蛇</strong>
             <span>摇杆控制，吃果成长</span>
           </button>
-          <button class="game-choice tetris-choice" data-game="tetris">
+          <button class="game-choice tetris-choice" data-game="tetris" data-category="mini">
             <strong>俄罗斯方块</strong>
             <span>左右移动，旋转下落</span>
           </button>
-          <button class="game-choice gomoku-choice" data-game="gomoku">
+          <button class="game-choice gomoku-choice" data-game="gomoku" data-category="board">
             <strong>五子棋</strong>
             <span>人机或双人对弈</span>
           </button>
-          <button class="game-choice xiangqi-choice" data-game="xiangqi">
+          <button class="game-choice xiangqi-choice" data-game="xiangqi" data-category="board">
             <strong>象棋</strong>
             <span>本地引擎人机对战</span>
+          </button>
+          <button class="game-choice shooter-choice" data-game="shooter" data-category="arcade">
+            <strong>像素突击</strong>
+            <span>原创横版街机射击</span>
+          </button>
+          <button class="game-choice hoops-choice" data-game="hoops" data-category="arcade">
+            <strong>街头投篮</strong>
+            <span>蓄力投篮，连进加分</span>
+          </button>
+          <button class="game-choice galaxy-choice" data-game="galaxy" data-category="arcade">
+            <strong>银河守卫</strong>
+            <span>移动闪避，连续射击</span>
           </button>
         </section>
       </section>
 
       <section id="gameScreen" class="game-screen">
-        <section class="game-header">
-          <button id="backHomeBtn" class="back-btn" type="button">返回主界面</button>
+        <header class="play-hud">
           <div>
             <p class="eyebrow">Now Playing</p>
             <h1 id="gameTitle">贪吃蛇</h1>
           </div>
-          <button id="topResetBtn" class="back-btn" type="button">重开</button>
-        </section>
-
-        <section class="hero compact-hero">
-        <div>
-          <p class="eyebrow">Arcade Collection</p>
-          <h1>游戏状态</h1>
-          <p class="subtitle">贪吃蛇、俄罗斯方块、五子棋、象棋，一站式开局。</p>
-        </div>
-        <div class="hero-stats">
-          <div><span id="gameLabel">贪吃蛇</span><small>当前游戏</small></div>
-          <div><span id="statusLabel">准备开始</span><small>状态</small></div>
-        </div>
-      </section>
-
-      <section class="stage">
-        <aside class="side-panel">
-          <div class="score-grid">
-            <div>
-              <small>分数</small>
-              <strong id="score">0</strong>
-            </div>
-            <div>
-              <small>最高</small>
-              <strong id="best">0</strong>
-            </div>
-            <div>
-              <small>回合</small>
-              <strong id="turn">-</strong>
-            </div>
-            <div>
-              <small>等级</small>
-              <strong id="level">1</strong>
-            </div>
+          <div class="hud-pills" aria-label="游戏状态">
+            <span id="hudScore">0 分</span>
+            <span id="hudStatus">准备开始</span>
           </div>
-
-          <div class="controls">
-            <button id="startBtn" class="primary">开始</button>
-            <button id="resetBtn">重开</button>
-          </div>
-
-          <div class="settings">
-            <label id="speedControl">
-              <span>速度</span>
-              <select id="snakeSpeed">
-                <option value="240" selected>新手</option>
-                <option value="180">中速</option>
-                <option value="125">高速</option>
-                <option value="85">极限</option>
-              </select>
-            </label>
-            <label id="modeControl">
-              <span>模式</span>
-              <select id="battleMode">
-                <option value="human">双人对战</option>
-                <option value="ai" selected>人机对战</option>
-              </select>
-            </label>
-            <label id="difficultyControl">
-              <span>难度</span>
-              <select id="aiLevel">
-                <option value="beginner">新手</option>
-                <option value="medium" selected>中级</option>
-                <option value="master">大师</option>
-              </select>
-            </label>
-          </div>
-
-          <div class="help">
-            <h2 id="helpTitle">操作</h2>
-            <p id="helpText">方向键、WASD 或摇杆控制移动，吃到果子会变长。</p>
-          </div>
-        </aside>
+          <button id="settingsBtn" class="settings-btn" type="button">设置</button>
+        </header>
 
         <section class="game-area">
           <canvas id="snakeCanvas" width="480" height="480" class="game-canvas active"></canvas>
@@ -141,6 +106,9 @@
             </aside>
           </div>
           <canvas id="gomokuCanvas" width="560" height="560" class="game-canvas"></canvas>
+          <canvas id="shooterCanvas" width="720" height="480" class="game-canvas"></canvas>
+          <canvas id="hoopsCanvas" width="560" height="560" class="game-canvas"></canvas>
+          <canvas id="galaxyCanvas" width="560" height="560" class="game-canvas"></canvas>
           <div id="xiangqiBoard" class="xiangqi-board" aria-label="中国象棋棋盘"></div>
 
           <div id="snakeStick" class="joystick" aria-label="贪吃蛇方向摇杆">
@@ -151,13 +119,79 @@
 
           <div id="tetrisControls" class="tetris-controls" aria-label="俄罗斯方块移动控制">
             <button id="tetrisLeft" type="button">左</button>
-            <button id="fallBtn" type="button">下落</button>
+            <button id="tetrisRotate" type="button">旋转</button>
             <button id="tetrisRight" type="button">右</button>
+            <button id="fallBtn" type="button">下落</button>
           </div>
+
+          <div id="arcadeControls" class="arcade-controls" aria-label="街机游戏控制">
+            <button id="arcadeLeft" type="button">左</button>
+            <button id="arcadeAction" type="button">动作</button>
+            <button id="arcadeRight" type="button">右</button>
+          </div>
+
+          <div id="boardTip" class="board-tip">红方回合</div>
         </section>
       </section>
-      </section>
+
+      <aside class="side-panel utility-panel">
+        <div class="score-grid">
+          <div><small>分数</small><strong id="score">0</strong></div>
+          <div><small>最高</small><strong id="best">0</strong></div>
+          <div><small>回合</small><strong id="turn">-</strong></div>
+          <div><small>等级</small><strong id="level">1</strong></div>
+        </div>
+        <div class="hero-stats hidden-status">
+          <div><span id="gameLabel">贪吃蛇</span><small>当前游戏</small></div>
+          <div><span id="statusLabel">准备开始</span><small>状态</small></div>
+        </div>
+        <div class="controls">
+          <button id="startBtn" class="primary">开始</button>
+          <button id="resetBtn">重开</button>
+        </div>
+        <div class="settings">
+          <label id="speedControl">
+            <span>速度</span>
+            <select id="snakeSpeed">
+              <option value="240" selected>新手</option>
+              <option value="180">中速</option>
+              <option value="125">高速</option>
+              <option value="85">极限</option>
+            </select>
+          </label>
+          <label id="modeControl">
+            <span>模式</span>
+            <select id="battleMode">
+              <option value="human">双人对战</option>
+              <option value="ai" selected>人机对战</option>
+            </select>
+          </label>
+          <label id="difficultyControl">
+            <span>难度</span>
+            <select id="aiLevel">
+              <option value="beginner">新手</option>
+              <option value="medium" selected>中级</option>
+              <option value="master">大师</option>
+            </select>
+          </label>
+        </div>
+        <div class="help">
+          <h2 id="helpTitle">操作</h2>
+          <p id="helpText">方向键、WASD 或摇杆控制移动。</p>
+        </div>
+      </aside>
     </main>
+
+    <div id="settingsModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="settingsTitle">
+      <div class="modal-card">
+        <p class="eyebrow">Paused</p>
+        <h2 id="settingsTitle">游戏设置</h2>
+        <p id="settingsSummary">游戏已暂停。</p>
+        <button id="resumeBtn" class="primary">继续游戏</button>
+        <button id="settingsRestartBtn">重开本局</button>
+        <button id="settingsHomeBtn">返回主页</button>
+      </div>
+    </div>
 
     <div id="resultModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
       <div class="modal-card">
