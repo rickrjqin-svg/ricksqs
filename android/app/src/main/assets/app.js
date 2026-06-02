@@ -606,8 +606,9 @@ const xiangqi = {
   current: "r",
   ended: false,
   thinking: false,
-  padX: 8.2,
-  padY: 6.6,
+  checkStreak: { side: null, count: 0 },
+  padX: 8.6,
+  padY: 7.2,
   reset() {
     clearTimer();
     hideResult();
@@ -628,25 +629,22 @@ const xiangqi = {
     this.selected = null;
     this.ended = false;
     this.thinking = false;
-    setStats({ score: 0, turn: "红方", level: 1, status: "对弈中" });
+    this.checkStreak = { side: null, count: 0 };
+    this.updateTurnStatus("对弈中");
     this.draw();
   },
   start() {
-    if (!this.ended) setStats({ score: 0, turn: this.current === "r" ? "红方" : "黑方", status: "对弈中" });
+    if (!this.ended) this.updateTurnStatus("对弈中");
   },
   draw() {
-    this.el.innerHTML = '<div class="x-river">楚河&nbsp;&nbsp;汉界</div>';
-    for (let i = 0; i < 10; i++) this.line(0, i, 8, i);
-    for (let i = 0; i < 9; i++) {
-      this.line(i, 0, i, 4);
-      this.line(i, 5, i, 9);
-    }
-    [[3, 0, 5, 2], [5, 0, 3, 2], [3, 7, 5, 9], [5, 7, 3, 9]].forEach((l) => this.line(...l));
-    [[1, 2], [7, 2], [0, 3], [2, 3], [4, 3], [6, 3], [8, 3], [1, 7], [7, 7], [0, 6], [2, 6], [4, 6], [6, 6], [8, 6]].forEach(([x, y]) => this.star(x, y));
+    const checked = this.checkedSide();
+    this.el.classList.toggle("check-alert", checked === this.current);
+    this.el.innerHTML = `${this.boardSvg()}<div class="x-river">楚河&nbsp;&nbsp;汉界</div>`;
     this.board.forEach((row, y) => row.forEach((p, x) => {
       if (!p) return;
       const b = document.createElement("button");
       b.className = `piece ${p.side === "r" ? "red" : ""}`;
+      if (this.isGeneral(p) && checked === p.side) b.classList.add("in-check");
       if (this.selected?.x === x && this.selected?.y === y) b.classList.add("selected");
       b.textContent = p.n;
       const point = this.boardPoint(x, y);
@@ -677,6 +675,34 @@ const xiangqi = {
       if (point) this.moveTo(point.x, point.y);
     };
   },
+  boardSvg() {
+    const line = (x1, y1, x2, y2, cls = "grid-line") => {
+      const a = this.boardPoint(x1, y1);
+      const b = this.boardPoint(x2, y2);
+      return `<line class="${cls}" x1="${a.x}" y1="${a.y}" x2="${b.x}" y2="${b.y}" />`;
+    };
+    const marker = (x, y) => {
+      const p = this.boardPoint(x, y);
+      const s = 1.35;
+      const gap = 1.1;
+      const dirs = [];
+      if (x > 0) dirs.push(`<path class="grid-mark" d="M ${p.x - gap - s} ${p.y - s} L ${p.x - gap} ${p.y - s} L ${p.x - gap} ${p.y - gap - s}" />`);
+      if (x < 8) dirs.push(`<path class="grid-mark" d="M ${p.x + gap + s} ${p.y - s} L ${p.x + gap} ${p.y - s} L ${p.x + gap} ${p.y - gap - s}" />`);
+      if (x > 0) dirs.push(`<path class="grid-mark" d="M ${p.x - gap - s} ${p.y + s} L ${p.x - gap} ${p.y + s} L ${p.x - gap} ${p.y + gap + s}" />`);
+      if (x < 8) dirs.push(`<path class="grid-mark" d="M ${p.x + gap + s} ${p.y + s} L ${p.x + gap} ${p.y + s} L ${p.x + gap} ${p.y + gap + s}" />`);
+      return dirs.join("");
+    };
+    const lines = [];
+    for (let y = 0; y < 10; y++) lines.push(line(0, y, 8, y));
+    for (let x = 0; x < 9; x++) {
+      lines.push(line(x, 0, x, 4));
+      lines.push(line(x, 5, x, 9));
+    }
+    [[3, 0, 5, 2], [5, 0, 3, 2], [3, 7, 5, 9], [5, 7, 3, 9]].forEach(([x1, y1, x2, y2]) => lines.push(line(x1, y1, x2, y2, "palace-line")));
+    const marks = [[1, 2], [7, 2], [0, 3], [2, 3], [4, 3], [6, 3], [8, 3], [0, 6], [2, 6], [4, 6], [6, 6], [8, 6], [1, 7], [7, 7]]
+      .map(([x, y]) => marker(x, y)).join("");
+    return `<svg class="x-grid" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">${lines.join("")}${marks}</svg>`;
+  },
   boardPoint(x, y) {
     return {
       x: this.padX + (x / 8) * (100 - this.padX * 2),
@@ -692,39 +718,18 @@ const xiangqi = {
     if (bx < 0 || bx > 8 || by < 0 || by > 9) return null;
     return { x: bx, y: by };
   },
-  line(x1, y1, x2, y2) {
-    const l = document.createElement("div");
-    l.className = "x-line";
-    const a = this.boardPoint(x1, y1);
-    const b = this.boardPoint(x2, y2);
-    const ax = a.x;
-    const ay = a.y;
-    const bx = b.x;
-    const by = b.y;
-    const len = Math.hypot(bx - ax, by - ay);
-    const ang = Math.atan2(by - ay, bx - ax) * 180 / Math.PI;
-    l.style.left = `${ax}%`;
-    l.style.top = `${ay}%`;
-    l.style.width = `${len}%`;
-    l.style.height = "3px";
-    l.style.transformOrigin = "0 0";
-    l.style.transform = `rotate(${ang}deg)`;
-    this.el.appendChild(l);
-  },
-  star(x, y) {
-    const mark = document.createElement("div");
-    mark.className = "x-star";
-    const point = this.boardPoint(x, y);
-    mark.style.left = `${point.x}%`;
-    mark.style.top = `${point.y}%`;
-    this.el.appendChild(mark);
-  },
   pick(x, y) {
     if (this.ended || this.thinking) return;
     const p = this.board[y][x];
     if (p?.side === this.current) {
       this.selected = { x, y };
       this.draw();
+      const targets = this.legalTargets(x, y);
+      if (this.isChecked(this.current) && !targets.length) {
+        setStats({ score: 0, turn: this.sideName(this.current), status: "该棋不能解将" });
+      } else {
+        this.updateTurnStatus(this.isChecked(this.current) ? this.currentCheckStatus() : "对弈中");
+      }
     } else {
       this.moveTo(x, y);
     }
@@ -756,7 +761,7 @@ const xiangqi = {
       return;
     }
     if (!this.isLegal(piece, from.x, from.y, x, y) || !this.isMoveSafe({ fromX: from.x, fromY: from.y, toX: x, toY: y }, piece.side)) {
-      setStats({ score: 0, turn: this.current === "r" ? "红方" : "黑方", status: "走法无效" });
+      setStats({ score: 0, turn: this.sideName(this.current), status: this.isChecked(this.current) ? "请先解将" : "走法无效" });
       return;
     }
     const captured = this.makeMove({ fromX: from.x, fromY: from.y, toX: x, toY: y });
@@ -767,11 +772,12 @@ const xiangqi = {
       return;
     }
     this.current = this.current === "r" ? "b" : "r";
-    setStats({ score: 0, turn: this.current === "r" ? "红方" : "黑方", status: "对弈中" });
+    if (this.handleCheckAfterMove(piece.side)) return;
+    this.updateTurnStatus("对弈中");
     this.draw();
     if (ui.battleMode.value === "ai" && this.current === "b") {
       this.thinking = true;
-      setStats({ score: 0, turn: "黑方", status: "电脑思考中" });
+      setStats({ score: 0, turn: "黑方", status: this.isChecked("b") ? "被将军，思考中" : "电脑思考中" });
       setTimeout(() => this.aiMove(), 220);
     }
   },
@@ -787,7 +793,8 @@ const xiangqi = {
       return;
     }
     this.current = "r";
-    setStats({ score: 0, turn: "红方", status: "对弈中" });
+    if (this.handleCheckAfterMove("b")) return;
+    this.updateTurnStatus("对弈中");
     this.draw();
   },
   makeMove(move) {
@@ -812,14 +819,51 @@ const xiangqi = {
   sideName(side) {
     return side === "r" ? "红方" : "黑方";
   },
-  finishWinner(side) {
+  updateTurnStatus(status) {
+    setStats({ score: 0, turn: this.sideName(this.current), status });
+  },
+  checkedSide() {
+    if (this.isChecked("r")) return "r";
+    if (this.isChecked("b")) return "b";
+    return null;
+  },
+  handleCheckAfterMove(moverSide) {
+    const checked = this.isChecked(this.current);
+    if (checked) {
+      this.checkStreak = this.checkStreak.side === this.current
+        ? { side: this.current, count: this.checkStreak.count + 1 }
+        : { side: this.current, count: 1 };
+      if (this.checkStreak.count >= 2) {
+        this.finishWinner(moverSide, `${this.sideName(this.current)}连续两次被将军，${this.sideName(moverSide)}获胜。`);
+        return true;
+      }
+      this.updateTurnStatus(`被将军 ${this.checkStreak.count}/2`);
+      return false;
+    }
+    if (this.checkStreak.side === this.current) {
+      this.checkStreak = { side: null, count: 0 };
+    }
+    return false;
+  },
+  currentCheckStatus() {
+    return this.checkStreak.side === this.current && this.checkStreak.count
+      ? `被将军 ${this.checkStreak.count}/2`
+      : "被将军";
+  },
+  isChecked(side) {
+    const king = this.findKing(side);
+    if (!king) return false;
+    const other = side === "r" ? "b" : "r";
+    return this.kingsFacing() || this.isSquareAttacked(king.x, king.y, other);
+  },
+  finishWinner(side, message = null) {
     const winner = this.sideName(side);
     this.ended = true;
     this.thinking = false;
     this.selected = null;
     setStats({ score: 0, turn: winner, status: "胜利" });
     this.draw();
-    showResult(`${winner}胜利`, `${winner}吃掉将帅获胜。`);
+    showResult(`${winner}胜利`, message || `${winner}吃掉将帅获胜。`);
   },
   undoMove(move, target) {
     this.board[move.fromY][move.fromX] = this.board[move.toY][move.toX];
