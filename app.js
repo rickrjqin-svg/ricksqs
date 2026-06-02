@@ -759,14 +759,11 @@ const xiangqi = {
       setStats({ score: 0, turn: this.current === "r" ? "红方" : "黑方", status: "走法无效" });
       return;
     }
-    this.makeMove({ fromX: from.x, fromY: from.y, toX: x, toY: y });
+    const captured = this.makeMove({ fromX: from.x, fromY: from.y, toX: x, toY: y });
     this.selected = null;
-    if (target?.n === "将" || target?.n === "帅") {
-      const winner = piece.side === "r" ? "红方" : "黑方";
-      this.ended = true;
-      setStats({ score: 0, turn: winner, status: "胜利" });
-      this.draw();
-      showResult(`${winner}胜利`, `${winner}吃掉将帅获胜。`);
+    const winnerSide = this.winnerAfterMove(piece.side, captured);
+    if (winnerSide) {
+      this.finishWinner(winnerSide);
       return;
     }
     this.current = this.current === "r" ? "b" : "r";
@@ -784,11 +781,9 @@ const xiangqi = {
     this.thinking = false;
     if (!move) return;
     const target = this.makeMove(move);
-    if (target?.n === "帅") {
-      this.ended = true;
-      setStats({ score: 0, turn: "黑方", status: "胜利" });
-      this.draw();
-      showResult("黑方胜利", "黑方吃掉将帅获胜。");
+    const winnerSide = this.winnerAfterMove("b", target);
+    if (winnerSide) {
+      this.finishWinner(winnerSide);
       return;
     }
     this.current = "r";
@@ -801,6 +796,30 @@ const xiangqi = {
     this.board[move.toY][move.toX] = piece;
     this.board[move.fromY][move.fromX] = null;
     return target;
+  },
+  winnerAfterMove(moverSide, target) {
+    if (this.isGeneral(target)) return moverSide;
+    let redGeneral = false;
+    let blackGeneral = false;
+    this.board.forEach((row) => row.forEach((piece) => {
+      if (piece?.side === "r" && piece.n === "帅") redGeneral = true;
+      if (piece?.side === "b" && piece.n === "将") blackGeneral = true;
+    }));
+    if (!redGeneral) return "b";
+    if (!blackGeneral) return "r";
+    return null;
+  },
+  sideName(side) {
+    return side === "r" ? "红方" : "黑方";
+  },
+  finishWinner(side) {
+    const winner = this.sideName(side);
+    this.ended = true;
+    this.thinking = false;
+    this.selected = null;
+    setStats({ score: 0, turn: winner, status: "胜利" });
+    this.draw();
+    showResult(`${winner}胜利`, `${winner}吃掉将帅获胜。`);
   },
   undoMove(move, target) {
     this.board[move.fromY][move.fromX] = this.board[move.toY][move.toX];

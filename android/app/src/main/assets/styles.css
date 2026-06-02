@@ -212,35 +212,54 @@ button {
 
 .play-hud {
   position: fixed;
-  top: 10px;
-  left: 12px;
-  right: 12px;
+  top: 34px;
+  left: 24px;
+  right: 24px;
   z-index: 10;
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 14px;
   pointer-events: none;
+}
+
+.play-hud > div:first-child {
+  flex: 0 0 auto;
+  min-width: 112px;
 }
 
 .hud-pills {
   display: flex;
-  gap: 8px;
+  gap: 12px;
   align-items: center;
   justify-content: center;
+  flex: 1 1 auto;
+  min-width: 0;
   pointer-events: none;
 }
 
 .hud-pills span,
 .board-tip {
-  min-height: 34px;
+  min-height: 48px;
   display: grid;
   place-items: center;
   border-radius: 999px;
-  padding: 0 13px;
+  padding: 0 20px;
   background: rgba(255, 255, 255, 0.82);
   color: var(--text);
   font-weight: 900;
+  line-height: 1;
+  white-space: nowrap;
+  word-break: keep-all;
   box-shadow: 0 5px 18px rgba(87, 123, 65, 0.14);
+}
+
+.hud-pills span {
+  min-width: 104px;
+}
+
+.hud-pills #hudStatus {
+  min-width: 188px;
 }
 
 .board-tip {
@@ -258,16 +277,22 @@ button {
 
 .play-hud h1 {
   font-size: clamp(22px, 5vw, 38px);
+  margin: 0;
+  line-height: 1.05;
+  white-space: nowrap;
   text-shadow: 0 2px 18px rgba(255, 255, 255, 0.75);
 }
 
 .play-hud .eyebrow {
   margin-bottom: 2px;
+  white-space: nowrap;
 }
 
 .play-hud .settings-btn {
   pointer-events: auto;
-  min-width: 82px;
+  min-width: 116px;
+  min-height: 58px;
+  white-space: nowrap;
 }
 
 .game-header h1 {
@@ -417,7 +442,7 @@ small {
   display: grid;
   place-items: center;
   min-height: 100vh;
-  padding: 72px 12px 18px;
+  padding: 118px 12px 18px;
   overflow: hidden;
   border: 0;
   border-radius: 0;
@@ -427,7 +452,7 @@ small {
 
 .game-screen[data-game="tetris"] .game-area {
   align-items: start;
-  padding-top: 76px;
+  padding-top: 116px;
   padding-bottom: 154px;
 }
 
@@ -731,12 +756,11 @@ small {
   position: absolute;
   left: 8.2%;
   right: 8.2%;
-  top: 45.35%;
-  height: 9.3%;
+  top: 45.65%;
+  height: 8.7%;
   display: grid;
   place-items: center;
-  border-top: 3px solid rgba(79, 48, 24, 0.72);
-  border-bottom: 3px solid rgba(79, 48, 24, 0.72);
+  border: 0;
   color: rgba(90, 54, 24, 0.54);
   font-size: clamp(22px, 5vw, 40px);
   font-weight: 900;
@@ -863,6 +887,46 @@ small {
   .app-shell {
     width: min(100% - 20px, 680px);
     padding: 10px 0 20px;
+  }
+
+  .play-hud {
+    top: 30px;
+    left: 18px;
+    right: 18px;
+    gap: 10px;
+  }
+
+  .play-hud > div:first-child {
+    min-width: 86px;
+  }
+
+  .play-hud h1 {
+    font-size: 30px;
+  }
+
+  .play-hud .eyebrow {
+    font-size: 13px;
+  }
+
+  .hud-pills {
+    gap: 8px;
+  }
+
+  .hud-pills span {
+    min-width: 82px;
+    min-height: 46px;
+    padding: 0 14px;
+    font-size: 20px;
+  }
+
+  .hud-pills #hudStatus {
+    min-width: 154px;
+    font-size: 19px;
+  }
+
+  .play-hud .settings-btn {
+    min-width: 96px;
+    min-height: 54px;
   }
 
   .game-menu {
