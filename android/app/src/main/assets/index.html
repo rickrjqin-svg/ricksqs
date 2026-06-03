@@ -10,10 +10,13 @@
     <main class="app-shell">
       <section id="homeScreen" class="home-screen active">
         <section class="hero home-hero">
-          <div>
+          <div class="hero-copy">
             <p class="eyebrow">Rick Arcade</p>
             <h1>Rick的小游戏</h1>
             <p class="subtitle">像闯关一样选择游戏，打开后直接进入全屏体验。</p>
+          </div>
+          <div class="hero-brand" aria-hidden="true">
+            <img src="assets/logo-transparent.png" alt="" />
           </div>
           <div class="hero-stats">
             <div><span>2 类</span><small>游戏节点</small></div>
@@ -23,10 +26,12 @@
 
         <section class="category-menu" aria-label="游戏分类">
           <button class="category-card mini-card" data-category="mini">
+            <span class="card-mark"></span>
             <strong>小游戏</strong>
             <span>贪吃蛇、俄罗斯方块</span>
           </button>
           <button class="category-card board-card" data-category="board">
+            <span class="card-mark"></span>
             <strong>棋牌类</strong>
             <span>五子棋、象棋</span>
           </button>
@@ -43,18 +48,22 @@
         </header>
         <section id="gameMenu" class="game-menu" aria-label="游戏列表">
           <button class="game-choice snake-choice" data-game="snake" data-category="mini">
+            <span class="choice-mark"></span>
             <strong>贪吃蛇</strong>
             <span>摇杆控制，吃果成长</span>
           </button>
           <button class="game-choice tetris-choice" data-game="tetris" data-category="mini">
+            <span class="choice-mark"></span>
             <strong>俄罗斯方块</strong>
             <span>左右移动，旋转下落</span>
           </button>
           <button class="game-choice gomoku-choice" data-game="gomoku" data-category="board">
+            <span class="choice-mark"></span>
             <strong>五子棋</strong>
             <span>人机或双人对弈</span>
           </button>
           <button class="game-choice xiangqi-choice" data-game="xiangqi" data-category="board">
+            <span class="choice-mark"></span>
             <strong>象棋</strong>
             <span>本地引擎人机对战</span>
           </button>

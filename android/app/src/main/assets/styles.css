@@ -1,8 +1,8 @@
 :root {
   color-scheme: light;
-  --bg: #f5fbef;
+  --bg: #f7fbf2;
   --panel: #ffffff;
-  --panel-2: #eef7e8;
+  --panel-2: #edf7e8;
   --text: #243224;
   --muted: #6d7b69;
   --line: rgba(36, 50, 36, 0.12);
@@ -11,6 +11,10 @@
   --coral: #ff6b5f;
   --blue: #1cb0f6;
   --ink: #151515;
+  --shadow-soft: 0 18px 50px rgba(75, 114, 63, 0.14);
+  --shadow-press: 0 8px 0 rgba(36, 50, 36, 0.08);
+  --radius-lg: 20px;
+  --radius-xl: 28px;
 }
 
 * {
@@ -23,9 +27,24 @@ body {
   font-family:
     Inter, "Microsoft YaHei", "PingFang SC", system-ui, -apple-system, sans-serif;
   background:
-    radial-gradient(circle at top left, rgba(88, 204, 2, 0.22), transparent 28rem),
-    linear-gradient(180deg, #f7fff0 0%, #eef8e8 100%);
+    linear-gradient(135deg, rgba(88, 204, 2, 0.09) 0 22%, transparent 22% 100%),
+    linear-gradient(180deg, #fbfff7 0%, #edf8e6 100%);
   color: var(--text);
+  -webkit-font-smoothing: antialiased;
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background-image:
+    linear-gradient(rgba(36, 50, 36, 0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(36, 50, 36, 0.035) 1px, transparent 1px);
+  background-size: 28px 28px;
+  mask-image: linear-gradient(180deg, rgba(0, 0, 0, 0.42), transparent 68%);
+  opacity: 0.8;
+  z-index: 0;
 }
 
 button {
@@ -38,7 +57,9 @@ button {
 .app-shell {
   width: min(1180px, calc(100% - 32px));
   margin: 0 auto;
-  padding: 28px 0;
+  padding: 26px 0 34px;
+  position: relative;
+  z-index: 1;
 }
 
 .home-screen,
@@ -59,7 +80,7 @@ button {
 }
 
 @keyframes screenRise {
-  from { opacity: 0; transform: translateY(10px); }
+  from { opacity: 0; transform: translateY(14px) scale(0.992); }
   to { opacity: 1; transform: translateY(0); }
 }
 
@@ -67,41 +88,73 @@ button {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 22px;
-  margin: 22px auto 0;
-  max-width: 860px;
+  margin: 24px auto 0;
+  max-width: 900px;
 }
 
 .category-card {
   position: relative;
-  min-height: 230px;
-  border: 2px solid rgba(36, 50, 36, 0.08);
-  border-radius: 30px;
+  min-height: 236px;
+  border: 2px solid rgba(36, 50, 36, 0.09);
+  border-radius: var(--radius-xl);
   color: var(--text);
-  padding: 28px;
+  padding: 30px;
   text-align: left;
-  box-shadow: 0 9px 0 rgba(36, 50, 36, 0.08), 0 20px 48px rgba(87, 123, 65, 0.14);
+  box-shadow: var(--shadow-press), var(--shadow-soft);
   overflow: hidden;
-  transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+  transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease, filter 0.18s ease;
+  animation: cardIn 0.34s ease both;
 }
+
+.category-card:nth-child(2),
+.game-choice:nth-child(2) { animation-delay: 0.04s; }
+.game-choice:nth-child(3) { animation-delay: 0.08s; }
+.game-choice:nth-child(4) { animation-delay: 0.12s; }
 
 .category-card::after {
   content: "";
   position: absolute;
-  right: 24px;
-  bottom: 24px;
-  width: 84px;
+  right: 22px;
+  bottom: 22px;
+  width: 96px;
   aspect-ratio: 1;
-  border-radius: 26px;
+  border-radius: 32px;
   background:
-    linear-gradient(135deg, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.38)),
-    radial-gradient(circle at 34% 28%, rgba(255, 255, 255, 0.98), rgba(255, 255, 255, 0) 42%);
-  box-shadow: inset 0 -8px 0 rgba(36, 50, 36, 0.08), 0 16px 30px rgba(36, 50, 36, 0.12);
+    linear-gradient(135deg, rgba(255, 255, 255, 0.92), rgba(255, 255, 255, 0.36)),
+    linear-gradient(180deg, rgba(36, 50, 36, 0.05), rgba(36, 50, 36, 0.12));
+  box-shadow: inset 0 -10px 0 rgba(36, 50, 36, 0.08), 0 18px 30px rgba(36, 50, 36, 0.12);
+}
+
+.card-mark,
+.choice-mark {
+  display: inline-grid;
+  place-items: center;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.74);
+  box-shadow: inset 0 -3px 0 rgba(36, 50, 36, 0.08);
+}
+
+.card-mark {
+  width: 54px;
+  aspect-ratio: 1;
+  margin-bottom: 18px;
+}
+
+.card-mark::before,
+.choice-mark::before {
+  content: "";
+  display: block;
+  width: 45%;
+  aspect-ratio: 1;
+  border-radius: 10px;
+  background: var(--jade);
 }
 
 .category-card:hover {
   transform: translateY(-4px);
   border-color: rgba(88, 204, 2, 0.5);
   box-shadow: 0 12px 0 rgba(36, 50, 36, 0.08), 0 28px 58px rgba(87, 123, 65, 0.18);
+  filter: saturate(1.04);
 }
 
 .category-card:active,
@@ -114,8 +167,9 @@ button {
 
 .category-card strong {
   display: block;
-  font-size: clamp(30px, 6vw, 50px);
-  line-height: 1;
+  font-size: 44px;
+  line-height: 1.05;
+  letter-spacing: 0;
 }
 
 .category-card span {
@@ -128,12 +182,17 @@ button {
 .mini-card { background: linear-gradient(135deg, rgba(88, 204, 2, 0.32), #fff); }
 .board-card { background: linear-gradient(135deg, rgba(255, 200, 61, 0.36), #fff); }
 
+.mini-card .card-mark::before { background: var(--jade); }
+.board-card .card-mark::before { background: var(--gold); }
+
 .library-header {
   display: grid;
-  grid-template-columns: 140px 1fr 140px;
+  grid-template-columns: 136px 1fr 136px;
   align-items: center;
   gap: 12px;
-  margin-bottom: 12px;
+  margin: 0 auto 18px;
+  max-width: 900px;
+  padding: 8px 0;
 }
 
 .library-header div {
@@ -143,13 +202,13 @@ button {
 
 .ghost-btn,
 .settings-btn {
-  min-height: 46px;
+  min-height: 50px;
   border: 1px solid var(--line);
-  border-radius: 14px;
+  border-radius: 16px;
   background: var(--panel);
   color: var(--text);
   font-weight: 850;
-  box-shadow: 0 5px 0 rgba(36, 50, 36, 0.08);
+  box-shadow: 0 5px 0 rgba(36, 50, 36, 0.08), 0 14px 26px rgba(87, 123, 65, 0.1);
 }
 
 .game-menu {
@@ -157,21 +216,32 @@ button {
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 18px;
   margin: 18px auto 0;
-  max-width: 840px;
+  max-width: 900px;
 }
 
 .game-choice {
-  min-height: 154px;
+  position: relative;
+  min-height: 168px;
   border: 2px solid rgba(36, 50, 36, 0.08);
-  border-radius: 22px;
+  border-radius: 24px;
   background:
     linear-gradient(135deg, rgba(255, 255, 255, 0.92), rgba(255, 255, 255, 0.72)),
     var(--panel);
   color: var(--text);
-  padding: 22px;
+  padding: 22px 22px 22px 94px;
   text-align: left;
   box-shadow: 0 8px 0 rgba(36, 50, 36, 0.08), 0 18px 48px rgba(87, 123, 65, 0.12);
-  transition: transform 0.16s ease, border-color 0.16s ease, background 0.16s ease;
+  transition: transform 0.16s ease, border-color 0.16s ease, background 0.16s ease, box-shadow 0.16s ease;
+  overflow: hidden;
+  animation: cardIn 0.34s ease both;
+}
+
+.choice-mark {
+  position: absolute;
+  left: 22px;
+  top: 24px;
+  width: 52px;
+  aspect-ratio: 1;
 }
 
 .game-choice:hover {
@@ -186,8 +256,9 @@ button {
 
 .game-choice strong {
   display: block;
-  font-size: clamp(24px, 5vw, 42px);
-  line-height: 1;
+  font-size: 34px;
+  line-height: 1.05;
+  letter-spacing: 0;
 }
 
 .game-choice span {
@@ -195,12 +266,18 @@ button {
   margin-top: 12px;
   color: var(--muted);
   font-size: 15px;
+  line-height: 1.5;
 }
 
 .snake-choice { background: linear-gradient(135deg, rgba(88, 204, 2, 0.22), rgba(255, 255, 255, 0.86)), var(--panel); }
 .tetris-choice { background: linear-gradient(135deg, rgba(28, 176, 246, 0.22), rgba(255, 255, 255, 0.86)), var(--panel); }
 .gomoku-choice { background: linear-gradient(135deg, rgba(255, 200, 61, 0.26), rgba(255, 255, 255, 0.86)), var(--panel); }
 .xiangqi-choice { background: linear-gradient(135deg, rgba(255, 107, 95, 0.22), rgba(255, 255, 255, 0.86)), var(--panel); }
+
+.snake-choice .choice-mark::before { background: var(--jade); border-radius: 50%; }
+.tetris-choice .choice-mark::before { background: var(--blue); }
+.gomoku-choice .choice-mark::before { background: var(--gold); border-radius: 50%; }
+.xiangqi-choice .choice-mark::before { background: var(--coral); }
 
 .game-header {
   display: grid;
@@ -221,6 +298,12 @@ button {
   justify-content: space-between;
   gap: 14px;
   pointer-events: none;
+  padding: 10px 12px 10px 18px;
+  border: 1px solid rgba(36, 50, 36, 0.08);
+  border-radius: 22px;
+  background: rgba(255, 255, 255, 0.66);
+  box-shadow: 0 16px 34px rgba(87, 123, 65, 0.12);
+  backdrop-filter: blur(14px);
 }
 
 .play-hud > div:first-child {
@@ -229,7 +312,7 @@ button {
 }
 
 .hud-pills {
-  display: flex;
+  display: none;
   gap: 12px;
   align-items: center;
   justify-content: center;
@@ -269,6 +352,9 @@ button {
   bottom: 18px;
   transform: translateX(-50%);
   z-index: 4;
+  border: 1px solid rgba(36, 50, 36, 0.08);
+  background: rgba(255, 255, 255, 0.88);
+  backdrop-filter: blur(12px);
 }
 
 .board-tip.show {
@@ -276,7 +362,7 @@ button {
 }
 
 .play-hud h1 {
-  font-size: clamp(22px, 5vw, 38px);
+  font-size: 32px;
   margin: 0;
   line-height: 1.05;
   white-space: nowrap;
@@ -290,9 +376,11 @@ button {
 
 .play-hud .settings-btn {
   pointer-events: auto;
-  min-width: 116px;
+  min-width: 104px;
   min-height: 58px;
   white-space: nowrap;
+  border-radius: 18px;
+  background: linear-gradient(180deg, #fff, #f5faf0);
 }
 
 .game-header h1 {
@@ -325,17 +413,40 @@ button {
 
 .hero {
   display: flex;
-  align-items: end;
+  align-items: center;
   justify-content: space-between;
   gap: 24px;
-  min-height: 176px;
-  padding: 28px;
+  min-height: 214px;
+  padding: 30px;
   border: 1px solid var(--line);
-  border-radius: 20px;
+  border-radius: var(--radius-xl);
   background:
-    linear-gradient(120deg, rgba(88, 204, 2, 0.18), transparent 45%),
-    linear-gradient(180deg, rgba(255, 255, 255, 0.96), rgba(255, 255, 255, 0.76));
-  box-shadow: 0 8px 0 rgba(36, 50, 36, 0.08), 0 24px 70px rgba(87, 123, 65, 0.14);
+    linear-gradient(120deg, rgba(88, 204, 2, 0.18), transparent 52%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(255, 255, 255, 0.82));
+  box-shadow: var(--shadow-press), 0 26px 70px rgba(87, 123, 65, 0.16);
+}
+
+.hero-copy {
+  min-width: 0;
+}
+
+.hero-brand {
+  flex: 0 0 auto;
+  width: min(22vw, 148px);
+  aspect-ratio: 1;
+  display: grid;
+  place-items: center;
+  border: 1px solid rgba(36, 50, 36, 0.1);
+  border-radius: 34px;
+  background: linear-gradient(180deg, #fff, #f5fbf0);
+  box-shadow: inset 0 -8px 0 rgba(36, 50, 36, 0.06), 0 18px 34px rgba(36, 50, 36, 0.12);
+}
+
+.hero-brand img {
+  width: 84%;
+  height: 84%;
+  object-fit: contain;
+  border-radius: 28px;
 }
 
 .eyebrow {
@@ -348,8 +459,9 @@ button {
 
 h1 {
   margin: 0;
-  font-size: clamp(42px, 8vw, 86px);
-  line-height: 0.96;
+  font-size: 66px;
+  line-height: 0.98;
+  letter-spacing: 0;
 }
 
 .subtitle {
@@ -357,24 +469,29 @@ h1 {
   margin: 14px 0 0;
   color: var(--muted);
   font-size: 18px;
+  line-height: 1.6;
 }
 
 .hero-stats {
   display: grid;
   grid-template-columns: repeat(2, minmax(118px, 1fr));
   gap: 10px;
+  align-self: stretch;
 }
 
 .hero-stats div,
 .score-grid div,
 .help {
   border: 1px solid var(--line);
-  border-radius: 8px;
-  background: rgba(255, 255, 255, 0.045);
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.62);
 }
 
 .hero-stats div {
   padding: 14px;
+  display: grid;
+  align-content: center;
+  min-height: 84px;
 }
 
 .hero-stats span,
@@ -432,7 +549,9 @@ small {
   position: fixed;
   inset: 0;
   z-index: 5;
-  background: linear-gradient(180deg, #f7fff0, #eaf7e3);
+  background:
+    linear-gradient(135deg, rgba(28, 176, 246, 0.08), transparent 42%),
+    linear-gradient(180deg, #f9fff4, #eaf7e3);
   overflow: hidden;
 }
 
@@ -864,9 +983,9 @@ small {
   inset: 0;
   z-index: 20;
   display: none;
-  place-items: center;
+  place-items: end center;
   padding: 22px;
-  background: rgba(10, 12, 14, 0.72);
+  background: rgba(20, 30, 22, 0.36);
   backdrop-filter: blur(10px);
 }
 
@@ -875,18 +994,20 @@ small {
 }
 
 .modal-card {
-  width: min(420px, 100%);
+  width: min(460px, 100%);
   border: 1px solid var(--line);
-  border-radius: 8px;
-  background: linear-gradient(180deg, #232a2f, #171b1f);
+  border-radius: 26px;
+  background: linear-gradient(180deg, #ffffff, #f4fbef);
   padding: 26px;
-  box-shadow: 0 28px 90px rgba(0, 0, 0, 0.42);
+  box-shadow: 0 28px 90px rgba(32, 52, 28, 0.3);
   text-align: center;
+  animation: sheetIn 0.22s ease both;
 }
 
 .modal-card h2 {
   margin: 6px 0 12px;
   font-size: 32px;
+  color: var(--text);
 }
 
 .modal-card p {
@@ -897,11 +1018,35 @@ small {
 
 .modal-card button {
   width: 100%;
-  min-height: 48px;
-  border-radius: 8px;
-  background: linear-gradient(135deg, var(--gold), #d7813d);
-  color: #1b1408;
+  min-height: 52px;
+  margin-top: 10px;
+  border-radius: 16px;
+  background: #fff;
+  color: var(--text);
   font-weight: 850;
+  border: 1px solid rgba(36, 50, 36, 0.1);
+  box-shadow: 0 5px 0 rgba(36, 50, 36, 0.08);
+}
+
+.modal-card button.primary {
+  background: linear-gradient(135deg, var(--jade), #39a900);
+  color: #fff;
+  border-color: rgba(45, 145, 0, 0.2);
+}
+
+.modal-card button:active {
+  transform: translateY(4px);
+  box-shadow: 0 1px 0 rgba(36, 50, 36, 0.08);
+}
+
+@keyframes sheetIn {
+  from { opacity: 0; transform: translateY(22px) scale(0.98); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes cardIn {
+  from { opacity: 0; transform: translateY(12px) scale(0.98); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
 }
 
 @media (max-width: 860px) {
@@ -915,6 +1060,8 @@ small {
     left: 18px;
     right: 18px;
     gap: 10px;
+    padding: 8px 10px 8px 14px;
+    border-radius: 20px;
   }
 
   .play-hud > div:first-child {
@@ -922,7 +1069,7 @@ small {
   }
 
   .play-hud h1 {
-    font-size: 30px;
+    font-size: 28px;
   }
 
   .play-hud .eyebrow {
@@ -966,6 +1113,10 @@ small {
     padding: 22px;
   }
 
+  .category-card strong {
+    font-size: 34px;
+  }
+
   .category-card::after {
     width: 64px;
     right: 18px;
@@ -974,8 +1125,19 @@ small {
   }
 
   .game-choice {
-    min-height: 118px;
-    padding: 18px;
+    min-height: 124px;
+    padding: 18px 18px 18px 82px;
+    border-radius: 20px;
+  }
+
+  .choice-mark {
+    left: 18px;
+    top: 20px;
+    width: 46px;
+  }
+
+  .game-choice strong {
+    font-size: 28px;
   }
 
   .game-header {
@@ -1008,6 +1170,17 @@ small {
   .hero {
     display: block;
     padding: 22px;
+    min-height: 0;
+  }
+
+  .hero-brand {
+    width: 96px;
+    margin-top: 20px;
+    border-radius: 24px;
+  }
+
+  h1 {
+    font-size: 46px;
   }
 
   .hero-stats {
@@ -1086,6 +1259,15 @@ small {
 
   .xiangqi-board {
     width: min(94vw, 620px);
+  }
+
+  .modal {
+    padding: 14px;
+  }
+
+  .modal-card {
+    border-radius: 24px;
+    padding: 22px;
   }
 }
 
