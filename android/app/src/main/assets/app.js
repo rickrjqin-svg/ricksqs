@@ -10,6 +10,7 @@ const ui = {
   settingsButton: $("settingsBtn"),
   settingsModal: $("settingsModal"),
   settingsSummary: $("settingsSummary"),
+  settingsPanel: $("modalSettings"),
   resume: $("resumeBtn"),
   settingsRestart: $("settingsRestartBtn"),
   settingsHome: $("settingsHomeBtn"),
@@ -86,6 +87,14 @@ function showResult(title, message) {
   ui.modalTitle.textContent = title;
   ui.modalMessage.textContent = `${message} 本局已经无法继续进行。`;
   ui.modal.classList.add("show");
+}
+
+function updateSettingsVisibility(id = activeGame) {
+  const hasGameSettings = id === "snake" || id === "gomoku" || id === "xiangqi";
+  ui.settingsPanel.classList.toggle("hidden", !hasGameSettings);
+  ui.speedControl.classList.toggle("hidden", id !== "snake");
+  ui.modeControl.classList.toggle("hidden", id !== "gomoku" && id !== "xiangqi");
+  ui.difficultyControl.classList.toggle("hidden", id !== "gomoku" && id !== "xiangqi");
 }
 
 function roundRect(ctx, x, y, w, h, r) {
@@ -634,7 +643,14 @@ const xiangqi = {
     this.draw();
   },
   start() {
-    if (!this.ended) this.updateTurnStatus("对弈中");
+    if (!this.ended) {
+      this.updateTurnStatus(this.isChecked(this.current) ? this.currentCheckStatus() : "对弈中");
+      if (ui.battleMode.value === "ai" && this.current === "b" && !this.thinking) {
+        this.thinking = true;
+        setStats({ score: 0, turn: "黑方", status: this.isChecked("b") ? "被将军，思考中" : "电脑思考中" });
+        setTimeout(() => this.aiMove(), 220);
+      }
+    }
   },
   draw() {
     const checked = this.checkedSide();
@@ -1255,9 +1271,7 @@ function switchGame(id) {
   ui.gameTitle.textContent = games[id].name;
   ui.helpTitle.textContent = "操作";
   ui.helpText.textContent = games[id].help;
-  ui.speedControl.classList.toggle("hidden", id !== "snake");
-  ui.modeControl.classList.toggle("hidden", id !== "gomoku" && id !== "xiangqi");
-  ui.difficultyControl.classList.toggle("hidden", id !== "gomoku" && id !== "xiangqi");
+  updateSettingsVisibility(id);
   ui.snakeStick.classList.toggle("show", id === "snake");
   ui.tetrisControls.classList.toggle("show", id === "tetris");
   ui.boardTip.classList.toggle("show", id === "gomoku" || id === "xiangqi");
@@ -1282,6 +1296,7 @@ function showHome() {
 
 function openSettings() {
   clearTimer();
+  updateSettingsVisibility(activeGame);
   ui.settingsSummary.textContent = `${games[activeGame].name} 已暂停。`;
   ui.settingsModal.classList.add("show");
 }

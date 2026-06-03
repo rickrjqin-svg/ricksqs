@@ -127,7 +127,19 @@
           <button id="startBtn" class="primary">开始</button>
           <button id="resetBtn">重开</button>
         </div>
-        <div class="settings">
+        <div class="help">
+          <h2 id="helpTitle">操作</h2>
+          <p id="helpText">方向键、WASD 或摇杆控制移动。</p>
+        </div>
+      </aside>
+    </main>
+
+    <div id="settingsModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="settingsTitle">
+      <div class="modal-card">
+        <p class="eyebrow">Paused</p>
+        <h2 id="settingsTitle">游戏设置</h2>
+        <p id="settingsSummary">游戏已暂停。</p>
+        <div id="modalSettings" class="settings modal-settings">
           <label id="speedControl">
             <span>速度</span>
             <select id="snakeSpeed">
@@ -153,18 +165,6 @@
             </select>
           </label>
         </div>
-        <div class="help">
-          <h2 id="helpTitle">操作</h2>
-          <p id="helpText">方向键、WASD 或摇杆控制移动。</p>
-        </div>
-      </aside>
-    </main>
-
-    <div id="settingsModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="settingsTitle">
-      <div class="modal-card">
-        <p class="eyebrow">Paused</p>
-        <h2 id="settingsTitle">游戏设置</h2>
-        <p id="settingsSummary">游戏已暂停。</p>
         <button id="resumeBtn" class="primary">继续游戏</button>
         <button id="settingsRestartBtn">重开本局</button>
         <button id="settingsHomeBtn">返回主页</button>
