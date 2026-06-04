@@ -615,7 +615,6 @@ const xiangqi = {
   current: "r",
   ended: false,
   thinking: false,
-  checkStreak: { side: null, count: 0 },
   padX: 8.6,
   padY: 7.2,
   reset() {
@@ -638,7 +637,6 @@ const xiangqi = {
     this.selected = null;
     this.ended = false;
     this.thinking = false;
-    this.checkStreak = { side: null, count: 0 };
     this.updateTurnStatus("对弈中");
     this.draw();
   },
@@ -758,6 +756,7 @@ const xiangqi = {
       for (let tx = 0; tx < 9; tx++) {
         const target = this.board[ty][tx];
         if (target?.side === piece.side) continue;
+        if (this.isGeneral(target)) continue;
         const move = { fromX: x, fromY: y, toX: tx, toY: ty };
         if (this.isLegal(piece, x, y, tx, ty) && this.isMoveSafe(move, piece.side)) {
           out.push({ x: tx, y: ty, capture: !!target });
@@ -776,17 +775,16 @@ const xiangqi = {
       this.draw();
       return;
     }
+    if (this.isGeneral(target)) {
+      setStats({ score: 0, turn: this.sideName(this.current), status: "不能直接吃将" });
+      return;
+    }
     if (!this.isLegal(piece, from.x, from.y, x, y) || !this.isMoveSafe({ fromX: from.x, fromY: from.y, toX: x, toY: y }, piece.side)) {
       setStats({ score: 0, turn: this.sideName(this.current), status: this.isChecked(this.current) ? "请先解将" : "走法无效" });
       return;
     }
-    const captured = this.makeMove({ fromX: from.x, fromY: from.y, toX: x, toY: y });
+    this.makeMove({ fromX: from.x, fromY: from.y, toX: x, toY: y });
     this.selected = null;
-    const winnerSide = this.winnerAfterMove(piece.side, captured);
-    if (winnerSide) {
-      this.finishWinner(winnerSide);
-      return;
-    }
     this.current = this.current === "r" ? "b" : "r";
     if (this.handleCheckAfterMove(piece.side)) return;
     this.updateTurnStatus("对弈中");
@@ -801,13 +799,11 @@ const xiangqi = {
     if (this.ended) return;
     const move = this.bestXiangqiMove(ui.aiLevel.value);
     this.thinking = false;
-    if (!move) return;
-    const target = this.makeMove(move);
-    const winnerSide = this.winnerAfterMove("b", target);
-    if (winnerSide) {
-      this.finishWinner(winnerSide);
+    if (!move) {
+      if (this.isCheckmate("b")) this.finishWinner("r", "黑方无棋可解将，红方获胜。");
       return;
     }
+    this.makeMove(move);
     this.current = "r";
     if (this.handleCheckAfterMove("b")) return;
     this.updateTurnStatus("对弈中");
@@ -819,18 +815,6 @@ const xiangqi = {
     this.board[move.toY][move.toX] = piece;
     this.board[move.fromY][move.fromX] = null;
     return target;
-  },
-  winnerAfterMove(moverSide, target) {
-    if (this.isGeneral(target)) return moverSide;
-    let redGeneral = false;
-    let blackGeneral = false;
-    this.board.forEach((row) => row.forEach((piece) => {
-      if (piece?.side === "r" && piece.n === "帅") redGeneral = true;
-      if (piece?.side === "b" && piece.n === "将") blackGeneral = true;
-    }));
-    if (!redGeneral) return "b";
-    if (!blackGeneral) return "r";
-    return null;
   },
   sideName(side) {
     return side === "r" ? "红方" : "黑方";
@@ -844,27 +828,21 @@ const xiangqi = {
     return null;
   },
   handleCheckAfterMove(moverSide) {
-    const checked = this.isChecked(this.current);
-    if (checked) {
-      this.checkStreak = this.checkStreak.side === this.current
-        ? { side: this.current, count: this.checkStreak.count + 1 }
-        : { side: this.current, count: 1 };
-      if (this.checkStreak.count >= 2) {
-        this.finishWinner(moverSide, `${this.sideName(this.current)}连续两次被将军，${this.sideName(moverSide)}获胜。`);
-        return true;
-      }
-      this.updateTurnStatus(`被将军 ${this.checkStreak.count}/2`);
-      return false;
+    if (this.isCheckmate(this.current)) {
+      this.finishWinner(moverSide, `${this.sideName(this.current)}无棋可解将，${this.sideName(moverSide)}获胜。`);
+      return true;
     }
-    if (this.checkStreak.side === this.current) {
-      this.checkStreak = { side: null, count: 0 };
+    if (this.isChecked(this.current)) {
+      this.updateTurnStatus("被将军");
+      return false;
     }
     return false;
   },
   currentCheckStatus() {
-    return this.checkStreak.side === this.current && this.checkStreak.count
-      ? `被将军 ${this.checkStreak.count}/2`
-      : "被将军";
+    return "被将军";
+  },
+  isCheckmate(side) {
+    return this.isChecked(side) && this.generateMoves(side).length === 0;
   },
   isChecked(side) {
     const king = this.findKing(side);
@@ -879,7 +857,7 @@ const xiangqi = {
     this.selected = null;
     setStats({ score: 0, turn: winner, status: "胜利" });
     this.draw();
-    showResult(`${winner}胜利`, message || `${winner}吃掉将帅获胜。`);
+    showResult(`${winner}胜利`, message || `${winner}将死对方获胜。`);
   },
   undoMove(move, target) {
     this.board[move.fromY][move.fromX] = this.board[move.toY][move.toX];
@@ -963,6 +941,7 @@ const xiangqi = {
     if (!from || !to) return null;
     const piece = this.board[from.y]?.[from.x];
     if (!piece || piece.side !== "b") return null;
+    if (this.isGeneral(this.board[to.y]?.[to.x])) return null;
     const move = { fromX: from.x, fromY: from.y, toX: to.x, toY: to.y };
     if (!this.isLegal(piece, move.fromX, move.fromY, move.toX, move.toY)) return null;
     return move;
@@ -1015,7 +994,7 @@ const xiangqi = {
         for (const [tx, ty] of this.destinationsFor(piece, x, y)) {
           const target = this.board[ty][tx];
           const move = { fromX: x, fromY: y, toX: tx, toY: ty, score: this.moveHintScore(piece, target, tx, ty) };
-          if (target?.side !== side && this.isLegal(piece, x, y, tx, ty) && this.isMoveSafe(move, side)) {
+          if (target?.side !== side && !this.isGeneral(target) && this.isLegal(piece, x, y, tx, ty) && this.isMoveSafe(move, side)) {
             moves.push(move);
           }
         }
